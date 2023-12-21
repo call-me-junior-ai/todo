@@ -1,23 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+
 /**
- * A custom React hook to determine if the current device is a smaller device
- * based on the screen width.
- * @param {number} [breakpoint=768] - The breakpoint in pixels at which a device is considered "smaller".
- * @returns {boolean} - A boolean value indicating whether the current device is a smaller device.
+ * A custom React hook that returns boolean indicating whether the window is smaller than the given breakpoint width.
+ * @param {number} [breakpoint=768] - The breakpoint width in pixels below which the window is considered "smaller".
+ * @returns {boolean} - A boolean value indicating if current window width is less than breakpoint.
  */
 export const useResponsiveDisplay = (breakpoint: number = 768): boolean => {
-  const [isSmallerDevice, setIsSmallerDevice] = useState<boolean>(false);
-  const checkScreenSize = () => {
-    setIsSmallerDevice(window.innerWidth < breakpoint);
-  };
+  const [isSmallerDevice, setIsSmallerDevice] = useState<boolean>(window.innerWidth < breakpoint);
+
   useEffect(() => {
-    checkScreenSize();
-    const handleResize = () => checkScreenSize();
-    window.addEventListener("resize", handleResize);
+    const checkBreakpoint = () => setIsSmallerDevice(window.innerWidth < breakpoint);
+
+    // Listener to check for the window resize events.
+    window.addEventListener('resize', checkBreakpoint);
+
+    // Remove event listener on cleanup.
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', checkBreakpoint);
     };
-  }, [breakpoint]);
+  }, [breakpoint]); // Dependency on the breakpoint to ensure the correct value is used.
 
   return isSmallerDevice;
 };
