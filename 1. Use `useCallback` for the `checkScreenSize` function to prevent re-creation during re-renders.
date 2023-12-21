@@ -1,0 +1,22 @@
+// src/hooks/useResponsiveDisplay.ts
+
+import { useState, useEffect, useCallback } from 'react';
+
+export const useResponsiveDisplay = (breakpoint: number = 768): boolean => {
+  const [isSmallerDevice, setIsSmallerDevice] = useState<boolean>(false);
+
+  // Defined outside of useEffect to prevent function re-creation
+  const checkScreenSize = useCallback(() => {
+    setIsSmallerDevice(window.innerWidth < breakpoint);
+  }, [breakpoint]);
+
+  useEffect(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, [checkScreenSize]);
+
+  return isSmallerDevice;
+};
