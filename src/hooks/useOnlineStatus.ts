@@ -14,11 +14,12 @@ export const useOnlineStatus = (): boolean => {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
+    // Clean up event listeners when the component unmounts or the dependencies of the useEffect change
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, []);
+  }, []); // Empty dependency array ensures this effect runs only once (like componentDidMount)
 
   return isOnline;
 };
