@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from 'react';
 
 /**
  * Hook that checks if a user is currently online.
@@ -7,18 +7,20 @@ import { useState, useEffect } from "react";
 export const useOnlineStatus = (): boolean => {
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
 
+  // Callbacks are memoized so the same function reference is maintained
+  const handleOnline = useCallback(() => setIsOnline(true), []);
+  const handleOffline = useCallback(() => setIsOnline(false), []);
+
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
+    // Cleanup the event listeners when the component unmounts
     return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
-  }, []);
+  }, [handleOnline, handleOffline]);
 
   return isOnline;
 };
