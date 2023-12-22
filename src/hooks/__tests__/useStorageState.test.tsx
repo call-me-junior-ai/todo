@@ -76,7 +76,7 @@ describe('useStorageState', () => {
       setValue('');
     });
 
-    expect(window.localStorage.getItem('testKey')).toBeNull();
+    expect(window.localStorage.getItem('testKey')).toEqual('');
   });
 });
 
