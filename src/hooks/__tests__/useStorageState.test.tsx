@@ -73,7 +73,7 @@ describe('useStorageState', () => {
     const [, setValue] = result.current;
 
     act(() => {
-      setValue(null);
+      setValue('');
     });
 
     expect(window.localStorage.getItem('testKey')).toBeNull();
