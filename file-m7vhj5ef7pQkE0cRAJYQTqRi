@@ -1,0 +1,6715 @@
+.prettierrc.json
+```json
+{
+  "singleQuote": false,
+  "printWidth": 100
+}
+```
+README.md
+```md
+<!-- prettier-ignore -->
+<p align="center">
+<img src="public/logo256.png" width="128px" />
+<h1>📝React.js Todo App</h1>
+</p>
+
+## [https://react-cool-todo-app.netlify.app/](https://react-cool-todo-app.netlify.app/)
+
+<p align="center">
+
+<img src="public/screenshots/iPhone Mockup.png" width="400px" />
+</p>
+
+## ⚡ Features
+
+- **Local Storage**: Save all your tasks locally.
+- **Custom Emojis**: The app features different emoji styles to choose from, including Apple, Facebook, Twitter, Google and NATIVE!
+- **It has a clean and responsive design**, ensuring a smooth user experience across different devices.
+- **Customizable Categories**: Users can create and personalize task categories to suit their preferences.
+- **Search Tasks**: Search functionality allows you to filter tasks by name or description, making it easy to find what you need.
+- **Task Reading Aloud**: Option to have tasks read aloud, with a selection of voices to choose from.
+- **Import/Export Tasks**: Users can now import and export tasks to/from JSON files. This feature allows users to back up their tasks or transfer them to other devices easily.
+- **Works offline**: This app is a Progressive Web App (PWA), which means it can be installed on your device and used even when you're offline. You can access and manage your tasks without an internet connection, ensuring uninterrupted productivity.
+
+## 📷 Screenshots
+
+<img src="public/screenshots/ss1.png" width="350px" />
+
+<img src="public/screenshots/ss2.png" width="350px" />
+
+<img src="public/screenshots/ss3.png" width="350px" />
+
+<img src="public/screenshots/ss4.png" width="350px" />
+
+<img src="public/screenshots/ss5.png" width="350px" />
+
+<img src="public/screenshots/ss6.png" width="350px" />
+
+<img src="public/screenshots/sspc1.png" width="650px" />
+
+## 🚀 Performance
+
+<img src="public/screenshots/performance.png" width="600px" />
+
+## ⚙️ Installation
+
+To install and run the project locally, follow these steps:
+
+- Clone the repository: `git clone https://github.com/maciekt07/TodoApp.git`
+- Navigate to the project directory: `cd TodoApp`
+- Install the dependencies: `npm install`
+- Start the development server: `npm run dev`
+
+The app will now be running at [http://localhost:5173/](http://localhost:5173/).
+```
+jest-setup.ts
+```ts
+// This file can contain any global setup for jest.
+
+// Example to silence console output during tests:
+// jest.spyOn(console, 'log').mockImplementation(() => {});
+// jest.spyOn(console, 'warn').mockImplementation(() => {});
+// jest.spyOn(console, 'error').mockImplementation(() => {});
+```
+package.json
+```json
+{
+  "name": "todoapp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "deploy": "npm run build && gh-pages -d dist",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "test:all": "jest"
+  },
+  "dependencies": {
+    "@emotion/css": "^11.11.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.0",
+    "emoji-picker-react": "^4.4.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-fast-marquee": "^1.6.2",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.11.1",
+    "react-spring-bottom-sheet": "^3.4.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "@vitejs/plugin-react": "^4.0.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "gh-pages": "^5.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2",
+    "vite-plugin-pwa": "^0.15.1",
+    "tailwindcss": "^3.4.1"
+  }
+}
+```
+tsconfig.json
+```json
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+```
+tsconfig.node.json
+```json
+{
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["vite.config.ts"]
+}
+```
+vite.config.ts
+```ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      // add this to cache all the imports
+      registerType: "autoUpdate",
+      workbox: {
+        globPatterns: ["**/*"],
+      },
+      // add this to cache all the
+      // static assets in the public folder
+      includeAssets: ["**/*"],
+      manifest: {
+        theme_color: "#232e58",
+        background_color: "#232e58",
+        display: "standalone",
+        scope: "/",
+        start_url: "/",
+        short_name: "Todo App",
+        description: "Todo App",
+        name: "Todo App",
+        icons: [
+          {
+            src: "logo192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "logo256.png",
+            sizes: "256x256",
+            type: "image/png",
+          },
+          {
+            src: "logo384.png",
+            sizes: "384x384",
+            type: "image/png",
+          },
+          {
+            src: "logo512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+        shortcuts: [
+          {
+            name: "Add Task",
+            description: "Add Task",
+            url: "/add",
+            icons: [
+              {
+                src: "add.png",
+                sizes: "192x192",
+                type: "image/png",
+              },
+            ],
+          },
+          {
+            name: "Categories",
+            description: "Task Categories",
+            url: "/categories",
+            icons: [
+              {
+                src: "categories.png",
+                sizes: "192x192",
+                type: "image/png",
+              },
+            ],
+          },
+          {
+            name: "Import Export",
+            description: "Import or Export Task",
+            url: "/import-export",
+            icons: [
+              {
+                src: "import-export.png",
+                sizes: "192x192",
+                type: "image/png",
+              },
+            ],
+          },
+          {
+            name: "Profile",
+            description: "User Profile",
+            url: "/user",
+            icons: [
+              {
+                src: "profile.png",
+                sizes: "192x192",
+                type: "image/png",
+              },
+            ],
+          },
+        ],
+      },
+    }),
+  ],
+});
+```
+src/App.tsx
+```tsx
+import {{ useStorageState }} from "./hooks/useStorageState";
+import {{ defaultUser }} from "./constants/defaultUser";
+import {{ User }} from "./types/user";
+import {{ ColorPalette, GlobalStyles, MuiTheme }} from "./styles";
+import {{ ThemeProvider }} from "@mui/material";
+import {{ useEffect }} from "react";
+import {{ ErrorBoundary }} from "./components";
+import {{ MainLayout }} from "./layouts/MainLayout";
+import {{ AppRouter }} from "./router";
+import {{ Toaster }} from "react-hot-toast";
+import {{ useResponsiveDisplay }} from "./hooks/useResponsiveDisplay";
+
+// Moved updateNestedProperties function outside of the App component to avoid redeclaration
+const updateNestedProperties = (userObject: any, defaultObject: any) => {{
+  if (!userObject) {{
+    return defaultObject;
+  }}
+
+  Object.keys(defaultObject).forEach((key) => {{
+    const userValue = userObject[key];
+    const defaultValue = defaultObject[key];
+
+    if (typeof defaultValue === "object" && defaultValue !== null) {{
+      // If the property is an object, recursively update nested properties
+      userObject[key] = updateNestedProperties(userValue, defaultValue);
+    }} else if (userValue === undefined) {{
+      // Update only if the property is missing in user
+      userObject[key] = defaultValue;
+    }}
+  }});
+
+  return userObject;
+}};
+
+// Memoizing static Toaster styles
+const toasterContainerStyle = {{
+  marginBottom: "96px", // This will be overridden if not on mobile
+}};
+
+const toasterToastOptions = {{
+  position: "bottom-center",
+  duration: 4000,
+  style: {{
+    padding: "14px 22px",
+    borderRadius: "20px",
+    fontSize: "17px",
+    border: `2px solid ${{ColorPalette.purple}}`,
+    background: "#141431e0",
+    WebkitBackdropFilter: "blur(6px)",
+    backdropFilter: "blur(6px)",
+    color: ColorPalette.fontLight,
+  }},
+  success: {{
+    iconTheme: {{
+      primary: ColorPalette.purple,
+      secondary: "white",
+    }},
+    style: {{}},
+  }},
+  error: {{
+    iconTheme: {{
+      primary: "#ff3030",
+      secondary: "white",
+    }},
+    style: {{
+      borderColor: "#ff3030",
+    }},
+  }},
+}};
+
+function App() {{
+  const [user, setUser] = useStorageState<User>(defaultUser, "user");
+  const isMobile = useResponsiveDisplay();
+
+  useEffect(() => {{
+    setUser((prevUser) => {{
+      // Make sure not to update if user hasn't changed
+      const updatedUser = updateNestedProperties({{ ...prevUser }}, defaultUser);
+      if (JSON.stringify(prevUser) !== JSON.stringify(updatedUser)) {{
+        return updatedUser;
+      }}
+      return prevUser;
+    }});
+  }}, []);
+
+  const userProps = {{ user, setUser }};
+
+  return (
+    <>
+      <ThemeProvider theme={MuiTheme}>
+        <GlobalStyles />
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          gutter={12}
+          containerStyle={{ ...toasterContainerStyle, marginBottom: isMobile ? "96px" : "12px" }}
+          toastOptions={toasterToastOptions}
+        />
+        <ErrorBoundary user={user}>
+          <MainLayout {{...userProps}}>
+            <AppRouter {{...userProps}} />
+          </MainLayout>
+        </ErrorBoundary>
+      </ThemeProvider>
+    </>
+  );
+}}
+
+export default App;
+```
+src/main.tsx
+```tsx
+import ReactDOM from "react-dom/client";
+import App from "./App.tsx";
+import { BrowserRouter } from "react-router-dom";
+
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
+```
+src/router.tsx
+```tsx
+import { Route, Routes } from "react-router-dom";
+import { UserProps } from "./types/user";
+import { UserSettings } from "./pages/UserSettings";
+import { Categories } from "./pages/Categories";
+import { NotFound } from "./pages/NotFound";
+import { AddTask } from "./pages/AddTask";
+import { ImportExport } from "./pages/ImportExport";
+import { Home } from "./pages/Home";
+import { TaskDetails } from "./pages/TaskDetails";
+
+export const AppRouter = ({ user, setUser }: UserProps): JSX.Element => {
+  const userProps = { user, setUser };
+
+  return (
+    <Routes>
+      <Route path="/" element={<Home {...userProps} />} />
+      <Route path="/task/:id" element={<TaskDetails {...userProps} />} />
+      <Route path="/add" element={<AddTask {...userProps} />} />
+      <Route path="/user" element={<UserSettings {...userProps} />} />
+      <Route path="/import-export" element={<ImportExport {...userProps} />} />
+      <Route path="/categories" element={<Categories {...userProps} />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+```
+src/vite-env.d.ts
+```ts
+/// <reference types="vite/client" />
+```
+src/utils/calculateTimeDiff.ts
+```ts
+/**
+ * Calculates the difference between a given date and the current date.
+ * @param {Date} date - The target date.
+ * @returns {string} - A string indicating the date difference.
+ */
+export const calculateDateDifference = (date: Date): string => {
+  const currentDate = new Date();
+  const currentDay = currentDate.getDate();
+  const targetDay = date.getDate();
+  const difference = date.getTime() - currentDate.getTime();
+  const differenceDays = Math.floor(difference / (1000 * 60 * 60 * 24)) + 1;
+
+  if (date < currentDate) {
+    return "Task not completed on time";
+  } else if (targetDay === currentDay) {
+    return "Today";
+  } else if (targetDay === currentDay + 1) {
+    return "Tomorrow";
+  } else if (differenceDays <= 7) {
+    // "en-US"
+    const dayOfWeek = date.toLocaleString(navigator.language, {
+      weekday: "long",
+    });
+    return `On ${dayOfWeek} (${differenceDays} day${
+      differenceDays !== 1 ? "s" : ""
+    })`;
+  } else {
+    return `In ${differenceDays} days`;
+  }
+};
+```
+src/utils/displayGreeting.ts
+```ts
+/**
+ * Returns a greeting based on the current time.
+ * @returns {string} The appropriate greeting.
+ */
+export const displayGreeting = (): string => {
+  const currentTime = new Date();
+  const currentHour = currentTime.getHours();
+  let greeting: string;
+  if (currentHour < 12 && currentHour >= 5) {
+    greeting = "Good morning";
+  } else if (currentHour < 18 && currentHour > 12) {
+    greeting = "Good afternoon";
+  } else {
+    greeting = "Good evening";
+  }
+
+  return greeting;
+};
+```
+src/utils/exportTasksToJson.ts
+```ts
+import { Task } from "../types/user";
+
+/**
+ * Exports an array of tasks to a JSON file and initiates the download.
+ * @param {Task[]} selectedTasks - The array of tasks to be exported.
+ */
+export const exportTasksToJson = (selectedTasks: Task[]): void => {
+  // Get the current date and time for the filename
+  const timestamp = new Date().toLocaleString().replace(/[/:, ]/g, "_");
+  const filename = `Tasks_${timestamp}.json`;
+
+  // Create a JSON blob
+  const dataStr = JSON.stringify(selectedTasks, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+
+  // Create a URL for the blob
+  const url = window.URL.createObjectURL(blob);
+
+  // Create a link element and initiate the download
+  const linkElement = document.createElement("a");
+  linkElement.href = url;
+  linkElement.download = filename;
+  linkElement.click();
+  console.log(`Exported tasks to ${filename}`);
+  // Clean up the URL object
+  window.URL.revokeObjectURL(url);
+};
+```
+src/utils/formatDate.ts
+```ts
+export const formatDate = (date: Date): string => {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds
+  const oneWeek = 7 * oneDay; // One week in milliseconds
+
+  if (isSameDay(date, today)) {
+    return `Today at ${formatTime(date)}`;
+  } else if (isSameDay(date, yesterday)) {
+    return `Yesterday at ${formatTime(date)}`;
+  } else if (date.getTime() > today.getTime() - oneWeek) {
+    return `${getDayOfWeek(date)} ${formatTime(date)}`;
+  } else {
+    return formatDateOnly(date);
+  }
+};
+
+const isSameDay = (date1: Date, date2: Date): boolean => {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+};
+
+const formatTime = (date: Date): string => {
+  return date.toLocaleTimeString(navigator.language, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const formatDateOnly = (date: Date): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  return date.toLocaleDateString(navigator.language, options);
+};
+
+const getDayOfWeek = (date: Date): string =>
+  date.toLocaleDateString(navigator.language, { weekday: "long" });
+```
+src/utils/getFontColorFromHex.ts
+```ts
+import { ColorPalette } from "../styles";
+
+/**
+ * Returns the appropriate font color (either black or white) based on the provided background color in hex format.
+ * @param {string} backgroundColor - The background color in hexformat (e.g., "#FFFFFF").
+ * @returns {string} The font color in hex format.
+ */
+export const getFontColorFromHex = (backgroundColor: string): string => {
+  const hexColor = backgroundColor.replace("#", "");
+  const red = parseInt(hexColor.substr(0, 2), 16);
+  const green = parseInt(hexColor.substr(2, 2), 16);
+  const blue = parseInt(hexColor.substr(4, 2), 16);
+  const brightness = (red * 299 + green * 587 + blue * 114) / 1000;
+  return brightness > 125 ? ColorPalette.fontDark : ColorPalette.fontLight;
+};
+```
+src/utils/getRandomGreeting.ts
+```ts
+/**
+ * Returns a random greeting message to inspire productivity.
+ * @returns {string} A random greeting message with optional emoji code.
+ */
+export const getRandomGreeting = (): string => {
+  const hoursLeft = 24 - new Date().getHours();
+
+  const greetingsText: string[] = [
+    "Let's make today count! **1f680**",
+    "Get things done and conquer the day!",
+    "Embrace the power of productivity!",
+    "Set your goals, crush them, repeat.",
+    "Today is a new opportunity to be productive!",
+    "Make every moment count.",
+    "Stay organized, stay ahead.",
+    "Take charge of your day!",
+    "One task at a time, you've got this!",
+    "Productivity is the key to success. **1f511**",
+    "Let's turn plans into accomplishments!",
+    "Start small, achieve big.",
+    "Be efficient, be productive.",
+    "Harness the power of productivity!",
+    "Get ready to make things happen!",
+    "It's time to check off those tasks! **2705**",
+    "Start your day with a plan! **1f5d3-fe0f**",
+    "Stay focused, stay productive.",
+    "Unlock your productivity potential. **1f513**",
+    "Turn your to-do list into a to-done list! **1f4dd**",
+
+    `Have a wonderful  ${new Date().toLocaleDateString("en", {
+      weekday: "long",
+    })}!`,
+    `Happy ${new Date().toLocaleDateString("en", {
+      month: "long",
+    })}! A great month for productivity!`,
+    hoursLeft > 4
+      ? `${hoursLeft} hours left in the day. Use them wisely!`
+      : `Only ${hoursLeft} hours left in the day`,
+  ];
+
+  const randomIndex = Math.floor(Math.random() * greetingsText.length);
+  return greetingsText[randomIndex];
+};
+```
+src/utils/getTaskCompletionText.ts
+```ts
+/**
+ * Returns a task completion message based on the completion percentage.
+ * @param {number} completionPercentage - The completion percentage of tasks.
+ * @returns {string} A task completion message.
+ */
+export const getTaskCompletionText = (completionPercentage: number): string => {
+  switch (true) {
+    case completionPercentage === 0:
+      return "No tasks completed yet. Keep going!";
+    case completionPercentage === 100:
+      return "Congratulations! All tasks completed!";
+    case completionPercentage >= 75:
+      return "Almost there!";
+    case completionPercentage >= 50:
+      return "You're halfway there! Keep it up!";
+    case completionPercentage >= 25:
+      return "You're making good progress.";
+    default:
+      return "You're just getting started.";
+  }
+};
+```
+src/utils/index.ts
+```ts
+export { displayGreeting } from "./displayGreeting";
+export { getRandomGreeting } from "./getRandomGreeting";
+export { getFontColorFromHex } from "./getFontColorFromHex";
+export { calculateDateDifference } from "./calculateTimeDiff";
+export { formatDate } from "./formatDate";
+export { getTaskCompletionText } from "./getTaskCompletionText";
+export { exportTasksToJson } from "./exportTasksToJson";
+```
+src/types/user.ts
+```ts
+import { EmojiStyle } from "emoji-picker-react";
+
+/**
+ * Represents a user in the application.
+ */
+export interface User {
+  name: string | null;
+  createdAt: Date;
+  profilePicture: string | URL | null;
+  emojisStyle: EmojiStyle;
+  tasks: Task[];
+  categories: Category[];
+  // colors: string[];
+  settings: AppSettings[];
+}
+
+/**
+ * Represents a task in the application.
+ */
+export interface Task {
+  id: number;
+  done: boolean;
+  pinned: boolean;
+  name: string;
+  description?: string;
+  emoji?: string;
+  color: string;
+  date: Date;
+  deadline?: Date;
+  category?: Category[];
+  lastSave?: Date;
+}
+
+// export type Emoji = Omit<
+//   EmojiClickData,
+//   "activeSkinTone" | "names" | "unifiedWithoutSkinTone" | "getImageUrl"
+// > & {
+//   name: string;
+// };
+
+// export type Emoji = Pick<EmojiClickData, "unified" | "emoji" | "names">;
+
+/**
+ * Represents a category in the application.
+ */
+export interface Category {
+  id: number;
+  name: string;
+  emoji?: string;
+  color: string;
+}
+
+/**
+ * Represents application settings for the user.
+ */
+export interface AppSettings {
+  enableCategories: boolean;
+  doneToBottom: boolean;
+  enableGlow: boolean;
+  enableReadAloud: boolean;
+  voice: string;
+  voiceVolume: number;
+}
+
+/**
+ * Represents the props for a component that requires user-related data.
+ */
+export interface UserProps {
+  user: User; // User data
+  setUser: React.Dispatch<React.SetStateAction<User>>; // Function to update user data
+}
+```
+src/styles/addTask.styled.tsx
+```tsx
+import styled from "@emotion/styled";
+import { Button, TextField } from "@mui/material";
+import { ColorPalette } from ".";
+
+export const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+export const Input = styled.input`
+  font-size: 24px;
+  border: none;
+  width: 400px;
+  padding: 16px;
+  border-radius: 20px;
+  background-color: #ffffffd8;
+  border: 4px solid #7614ff;
+  color: #212121;
+  &::placeholder {
+    color: #212121;
+  }
+`;
+
+export const AddTaskButton = styled(Button)`
+  border: none;
+  padding: 16px 32px;
+  font-size: 24px;
+  background: ${ColorPalette.purple};
+  color: #ffffff;
+  border-radius: 999px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s all;
+  margin: 20px;
+  width: 400px;
+  text-transform: capitalize;
+  &:hover {
+    box-shadow: 0px 0px 24px 0px #7614ff;
+    background: ${ColorPalette.purple};
+  }
+  &:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.7;
+    color: white;
+  }
+`;
+export const StyledInput = styled(TextField)`
+  margin: 12px;
+  .MuiOutlinedInput-root {
+    border-radius: 16px;
+    transition: 0.3s all;
+    width: 400px;
+    color: white;
+  }
+`;
+```
+src/styles/globalStyles.tsx
+```tsx
+import { Global, css, keyframes } from "@emotion/react";
+import styled from "@emotion/styled";
+import { Button } from "@mui/material";
+import { ColorPalette } from ".";
+
+const globalStyles = css`
+  * {
+    font-family: "Poppins", sans-serif !important;
+    -webkit-tap-highlight-color: transparent;
+    &::selection {
+      background-color: #9a52ff;
+      color: #ffffff;
+      text-shadow: 0 0 8px #d22eff;
+    }
+  }
+  :root {
+    font-family: "Poppins", sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light;
+    color: #f5f5f5;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    --rsbs-backdrop-bg: rgba(0, 0, 0, 0.3);
+  }
+
+  /* div[data-rsbs-backdrop="true"] {
+    backdrop-filter: blur(2px);
+  } */
+
+  div[role="dialog"] {
+    border-radius: 42px 42px 0 0;
+    z-index: 9999999;
+  }
+
+  div[data-rsbs-backdrop="true"] {
+    z-index: 999;
+  }
+
+  div[data-rsbs-header="true"] {
+    z-index: 999999;
+    &::before {
+      width: 60px;
+      height: 6px;
+      border-radius: 100px;
+      background: #cfcfcf;
+      margin-top: 2px;
+    }
+  }
+
+  body {
+    margin: 8px 16vw;
+    touch-action: manipulation;
+    //FIXME:
+    /* background: linear-gradient(180deg, #232e58 0%, #171d34 100%); */
+    background: #232e58;
+    background-attachment: fixed;
+    background-size: cover;
+    @media (max-width: 1024px) {
+      margin: 20px;
+    }
+
+    /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+
+      background-color: #232e58;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #6d2aff;
+      border-radius: 64px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #8750ff;
+    }
+
+    ::-webkit-scrollbar-track {
+      border-radius: 64px;
+      background-color: #232e58;
+    }
+  }
+
+  pre {
+    background-color: black;
+    color: white;
+    padding: 16px;
+    border-radius: 16px;
+    overflow-x: auto;
+    border: 2px solid #40404062;
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+
+      background-color: #232e58;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #6d2aff;
+      border-radius: 64px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #8750ff;
+    }
+
+    ::-webkit-scrollbar-track {
+      border-radius: 64px;
+      background-color: #232e58;
+    }
+  }
+
+  .EmojiPickerReact {
+    --epr-hover-bg-color: #b624ffaf;
+    --epr-focus-bg-color: #b624ffaf;
+    --epr-highlight-color: #b624ff;
+    --epr-search-border-color: #b624ff;
+    --epr-category-icon-active-color: #b624ff;
+  }
+
+  .MuiDialog-container {
+    backdrop-filter: blur(4px);
+  }
+  .MuiPaper-elevation8 {
+    border-radius: 16px !important;
+  }
+  .MuiSelect-select,
+  .MuiSelect-select {
+    display: flex !important;
+    justify-content: left;
+    align-items: center;
+    gap: 4px;
+  }
+  .MuiTooltip-tooltip {
+    color: white !important;
+    background-color: #141431dd !important;
+    backdrop-filter: blur(6px) !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+  }
+  .MuiBottomNavigationAction-root {
+    padding: 12px !important;
+    margin: 0 !important;
+    max-height: none;
+  }
+  .MuiSlider-valueLabel {
+    border-radius: 10px !important;
+    /* box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25) !important;
+    text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25) !important; */
+    padding: 6px 14px !important;
+    color: #ffffff !important;
+    background-color: #141431dd !important;
+    /* backdrop-filter: blur(6px) !important; */
+
+    /* margin-top: 90px; */
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+`;
+
+export const GlobalStyles = () => <Global styles={globalStyles} />;
+
+export const DialogBtn = styled(Button)`
+  padding: 10px 16px;
+  border-radius: 16px;
+  font-size: 16px;
+  margin: 8px;
+`;
+
+export const StyledLink = styled.a`
+  cursor: pointer;
+  color: ${ColorPalette.purple};
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s all;
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: ${ColorPalette.purple};
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+    border-radius: 100px;
+  }
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+  &:hover {
+    text-shadow: 0px 0px 20px ${ColorPalette.purple};
+  }
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+`;
+
+export const fadeInLeft = keyframes`
+from {
+  opacity: 0;
+  transform: translateX(-40px)
+}
+to {
+  opacity: 1;
+  transform: translateX(0px)
+  }
+`;
+export const fadeIn = keyframes`
+from {
+  opacity: 0;
+}
+
+`;
+export const slideIn = keyframes`
+  from{
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+export const slideInBottom = keyframes`
+  from{
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+`;
+
+export const pulseAnimation = keyframes`
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(182, 36, 255, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 12px rgba(182, 36, 255, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(182, 36, 255, 0);
+  }
+`;
+```
+src/styles/home.styled.tsx
+```tsx
+import styled from "@emotion/styled";
+import { fadeIn, fadeInLeft } from "./globalStyles";
+import { Box, CircularProgress } from "@mui/material";
+import { ColorPalette } from ".";
+
+export const GreetingHeader = styled.div`
+  display: flex;
+  margin-top: 12px;
+  font-size: 26px;
+  font-weight: bold;
+  margin-top: 16px;
+  margin-left: 8px;
+
+  @media (max-width: 550px) {
+    font-size: 22px;
+  }
+`;
+
+export const GreetingText = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  margin-top: 4px;
+  margin-left: 8px;
+  font-style: italic;
+  animation: ${fadeInLeft} 0.5s ease-in-out;
+`;
+
+export const TasksCountContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const TasksCount = styled.div<{ glow: boolean }>`
+  /* border: 3px solid ${ColorPalette.purple}; */
+  /* box-shadow: ${(props) => (props.glow ? "0 0 48px -8px #b624ff9d" : "none")}; */
+  background: #090b2258;
+  transition: 0.3s all;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 8px 16px;
+  padding: 20px 24px;
+  margin: 24px 0 12px 0;
+  border-radius: 24px;
+  width: 650px;
+  border: 1px solid #44479cb7;
+  @media (min-width: 1024px) {
+    padding: 24px;
+  }
+`;
+
+export const TaskCountTextContainer = styled.div`
+  line-height: 1.75;
+  margin-left: 6px;
+`;
+
+export const TaskCountHeader = styled.h4`
+  margin: 0;
+  font-size: 16px;
+  @media (min-width: 1024px) {
+    font-size: 17px;
+  }
+`;
+
+export const TaskCompletionText = styled.p`
+  margin: 0;
+  font-size: 16px;
+`;
+
+// export const DeleteDoneBtn = styled.button`
+//   position: fixed;
+//   display: flex;
+//   cursor: pointer;
+//   border: none;
+//   font-weight: bold;
+//   bottom: 24px;
+//   width: auto;
+
+//   font-size: 17px;
+//   padding: 18px;
+//   background-color: #ff453f;
+//   color: white;
+//   border-radius: 18px;
+//   box-shadow: 0 0 6px 0 #ff453fd6;
+// `;
+
+export const ProgressPercentageContainer = styled(Box)`
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #090b2287;
+  border-radius: 100px;
+  margin: -5px;
+  border: 1px solid #44479cb7;
+`;
+// const pulse = keyframes`
+//   0% {
+//     filter: drop-shadow(0 0 6px ${ColorPalette.purple});
+//   }
+//   50% {
+//     filter: drop-shadow(0 0 2px ${ColorPalette.purple});
+//   }
+//   100% {
+//     filter: drop-shadow(0 0 6px ${ColorPalette.purple});
+//   }
+// `;
+export const StyledProgress = styled(CircularProgress)`
+  z-index: 1;
+  margin: 1px;
+  filter: drop-shadow(0 0 6px ${ColorPalette.purple});
+`;
+
+export const Offline = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  animation: ${fadeIn} 0.5s ease;
+`;
+```
+src/styles/index.ts
+```ts
+export { MuiTheme, ColorPalette } from "./theme";
+export {
+  GlobalStyles,
+  DialogBtn,
+  fadeInLeft,
+  fadeIn,
+  slideIn,
+  slideInBottom,
+  StyledLink,
+  pulseAnimation,
+} from "./globalStyles";
+export {
+  GreetingHeader,
+  GreetingText,
+  TasksCount,
+  TaskCompletionText,
+  TaskCountHeader,
+  TaskCountTextContainer,
+  TasksCountContainer,
+  ProgressPercentageContainer,
+  Offline,
+  StyledProgress,
+} from "./home.styled";
+export { Container, Input, AddTaskButton, StyledInput } from "./addTask.styled";
+export {
+  TaskComponent,
+  EmojiContainer,
+  TaskDate,
+  TaskInfo,
+  TaskDescription,
+  TaskHeader,
+  NoTasks,
+  CategoriesListContainer,
+  TasksContainer,
+  Pinned,
+  CategoryChip,
+  TimeLeft,
+  TaskName,
+  HighlightedText,
+  SearchInput,
+} from "./tasks.styled";
+```
+src/styles/tasks.styled.tsx
+```tsx
+import styled from "@emotion/styled";
+import { fadeIn } from ".";
+import { Chip, TextField } from "@mui/material";
+import { getFontColorFromHex } from "../utils";
+
+interface TaskContainerProps {
+  backgroundColor: string;
+  clr: string;
+  done: boolean;
+  glow: boolean;
+  blur: boolean;
+}
+
+export const TaskComponent = styled.div<TaskContainerProps>`
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  transition: 0.3s all;
+  background-color: ${({ backgroundColor }) => backgroundColor};
+  opacity: ${({ done }) => (done ? 0.7 : 1)};
+  color: ${({ clr }) => clr};
+  border-left: ${({ done }) => (done ? "6px solid #00ff0d" : "6px solid transparent")};
+  box-shadow: ${(props) =>
+    props.glow && !props.blur ? `0 0 128px -28px ${props.backgroundColor}` : "none"};
+  padding: 16px 16px 16px 16px;
+  border-radius: 24px;
+  animation: ${fadeIn} 0.5s ease-in;
+  filter: ${({ blur }) => (blur ? "blur(2px) opacity(75%)" : "none")};
+`;
+
+export const EmojiContainer = styled.span<{ clr: string }>`
+  text-decoration: none;
+  margin-right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => (props.clr === "#1A1A1A" ? "#4b4b4b6e" : "#dddddd9d")};
+  font-size: 32px;
+  padding: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const TaskInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
+export const TaskHeader = styled.div`
+  display: flex;
+  align-items: center;
+
+  /* @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  } */
+`;
+
+export const TaskName = styled.h3<{ done: boolean }>`
+  font-size: 20px;
+  margin: 0;
+  text-decoration: ${({ done }) => (done ? "line-through" : "none")};
+`;
+
+export const TaskDate = styled.p`
+  margin: 0 6px;
+  text-align: right;
+  margin-left: auto;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 300;
+
+  /* @media (max-width: 600px) {
+      margin-left: 0;
+      margin-top: 4px;
+      text-align: left;
+    } */
+`;
+
+export const TaskDescription = styled.p<{ done: boolean }>`
+  margin: 0;
+  font-size: 18px;
+  text-decoration: ${({ done }) => (done ? "line-through" : "none")};
+  /* white-space: pre-line;
+  line-height: 1em; */
+`;
+
+export const NoTasks = styled.div`
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100vw;
+  opacity: 0.9;
+  font-size: 18px;
+  /* @media (max-width: 1024px) {
+      font-size: 16px;
+    } */
+`;
+
+export const TasksContainer = styled.main`
+  display: flex;
+  justify-content: center;
+  max-width: 700px;
+  margin: 0 auto;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+export const TimeLeft = styled.span<{ timeUp?: boolean; done: boolean }>`
+  color: ${(props) => props.timeUp && !props.done && "#ff2a23d5"};
+  text-shadow: ${(props) => (props.timeUp && !props.done ? "0 0 8px #ff2a23d5" : "none")};
+  text-decoration: ${(props) => (props.done ? "line-through" : "none")};
+  transition: 0.3s all;
+  font-size: 14px;
+  margin: 4px 0;
+  font-weight: 500;
+  font-style: italic;
+  display: flex;
+  opacity: ${(props) => (props.timeUp ? 1 : 0.9)};
+`;
+
+export const Pinned = styled.div`
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  opacity: 0.8;
+  font-size: 16px;
+`;
+
+interface CategoryChipProps {
+  backgroundclr: string;
+  borderclr?: string;
+  glow: boolean;
+  list?: boolean;
+}
+
+export const CategoryChip = styled(Chip)<CategoryChipProps>`
+  color: ${({ backgroundclr }) => getFontColorFromHex(backgroundclr)};
+  background-color: ${({ backgroundclr }) => backgroundclr};
+  box-shadow: ${(props) => (props.glow ? `0 0 8px 0 ${props.backgroundclr}` : "none")};
+  border: ${({ borderclr }) => (borderclr ? `2px solid ${borderclr}` : "none")};
+  font-weight: bold;
+  font-size: 14px;
+  margin: 6px 0 0 0;
+  padding: 8px;
+  transition: 0.3s all;
+  /* opacity: ${({ list }) => (list ? 1 : 0.9)}; */
+  animation: ${fadeIn} 0.5s ease-in;
+
+  &:hover {
+    background-color: ${(props) => props.backgroundclr};
+    box-shadow: ${(props) => props.list && `0 0 8px 0px ${props.backgroundclr}`};
+    opacity: ${({ list }) => list && 0.8};
+  }
+
+  &:focus-visible {
+    opacity: 0.8;
+    background-color: ${(props) => props.backgroundclr};
+  }
+  &:focus {
+    opacity: none;
+  }
+
+  & .MuiChip-deleteIcon {
+    color: ${(props) => getFontColorFromHex(props.backgroundclr)};
+    transition: 0.3s all;
+    width: 22px;
+    height: 22px;
+    stroke: transparent;
+    @media (max-width: 1024px) {
+      width: 26px;
+      height: 26px;
+    }
+    &:hover {
+      color: ${(props) => getFontColorFromHex(props.backgroundclr)};
+      opacity: 0.8;
+    }
+  }
+`;
+
+export const CategoriesListContainer = styled.div`
+  position: sticky;
+  background: transparent;
+  backdrop-filter: blur(24px);
+  z-index: 1;
+  top: 0;
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 0 6px 0;
+  margin: 8px 0;
+
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: #ffffff15;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #ffffff30;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #ffffff50;
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background-color: #ffffff15;
+  }
+`;
+
+export const HighlightedText = styled.span`
+  background-color: #6829ef;
+  color: #fff;
+  padding: 2px 0;
+  border-radius: 4px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  margin: 0;
+  font-weight: bold;
+  border: 1px solid #ffffff7f;
+  transition: 0.3s all;
+`;
+
+export const SearchInput = styled(TextField)`
+  margin: 8px 0 0 0;
+  border-radius: 16px;
+  transition: 0.3s all;
+
+  &:focus {
+  }
+  & .MuiOutlinedInput-root {
+    padding: 2px 16px;
+    border-radius: 16px;
+    transition: 0.3s all;
+    background: #090b2258;
+    color: white;
+  }
+`;
+```
+src/styles/theme.tsx
+```tsx
+import { createTheme } from "@mui/material";
+
+export const ColorPalette = {
+  fontDark: "#101727",
+  fontLight: "#F5F5F5",
+  purple: "#b624ff",
+  red: "#ff3131",
+};
+
+export const MuiTheme = createTheme({
+  components: {
+    MuiTooltip: {
+      defaultProps: {
+        disableInteractive: true,
+      },
+    },
+  },
+  typography: {
+    fontFamily: '"Poppins", sans-serif',
+  },
+
+  palette: {
+    primary: {
+      main: ColorPalette.purple,
+    },
+    secondary: {
+      main: "#bababa",
+    },
+    error: {
+      main: ColorPalette.red,
+    },
+  },
+});
+```
+src/pages/AddTask.tsx
+```tsx
+import { Category, Task, UserProps } from "../types/user";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AddTaskButton, Container, StyledInput } from "../styles";
+import { Edit } from "@mui/icons-material";
+
+import { Button, Typography } from "@mui/material";
+
+import { DESCRIPTION_MAX_LENGTH, TASK_NAME_MAX_LENGTH } from "../constants";
+import { CategorySelect, ColorPicker, TopBar, CustomEmojiPicker } from "../components";
+
+import toast from "react-hot-toast";
+
+export const AddTask = ({ user, setUser }: UserProps) => {
+  const [name, setName] = useState<string>("");
+  const [emoji, setEmoji] = useState<string | undefined>();
+  const [color, setColor] = useState<string>("#b624ff");
+  const [description, setDescription] = useState<string>("");
+  const [deadline, setDeadline] = useState<string>("");
+
+  const [nameError, setNameError] = useState<string>("");
+  const [descriptionError, setDescriptionError] = useState<string>("");
+
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+
+  const n = useNavigate();
+
+  useEffect(() => {
+    document.title = "Todo App - Add Task";
+  }, []);
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = event.target.value;
+    setName(newName);
+    if (newName.length > TASK_NAME_MAX_LENGTH) {
+      setNameError(`Name should be less than or equal to ${TASK_NAME_MAX_LENGTH} characters`);
+    } else {
+      setNameError("");
+    }
+  };
+
+  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newDescription = event.target.value;
+    setDescription(newDescription);
+    if (newDescription.length > DESCRIPTION_MAX_LENGTH) {
+      setDescriptionError(
+        `Description should be less than or equal to ${DESCRIPTION_MAX_LENGTH} characters`
+      );
+    } else {
+      setDescriptionError("");
+    }
+  };
+
+  // const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setColor(event.target.value);
+  // };
+
+  const handleDeadlineChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDeadline(event.target.value);
+  };
+
+  const handleAddTask = () => {
+    if (name !== "") {
+      if (name.length > TASK_NAME_MAX_LENGTH || description.length > DESCRIPTION_MAX_LENGTH) {
+        return; // Do not add the task if the name or description exceeds the maximum length
+      }
+
+      const newTask: Task = {
+        id: new Date().getTime() + Math.floor(Math.random() * 1000),
+        done: false,
+        pinned: false,
+        name,
+        description: description !== "" ? description : undefined,
+        emoji: emoji ? emoji : undefined,
+        color,
+        date: new Date(),
+        deadline: deadline !== "" ? new Date(deadline) : undefined,
+        category: selectedCategories ? selectedCategories : [],
+      };
+
+      setUser((prevUser) => ({
+        ...prevUser,
+        tasks: [...prevUser.tasks, newTask],
+      }));
+
+      n("/");
+      toast.success(() => (
+        <div>
+          Added task - <b>{newTask.name}</b>
+        </div>
+      ));
+    } else {
+      toast.error("Please enter a task name");
+    }
+  };
+
+  return (
+    <>
+      <TopBar title="Add New Task" />
+      <Container>
+        <CustomEmojiPicker user={user} setEmoji={setEmoji} color={color} />
+        <StyledInput
+          label="Task Name"
+          name="name"
+          placeholder="Enter task name"
+          value={name}
+          onChange={handleNameChange}
+          focused
+          error={nameError !== ""}
+          helperText={nameError}
+        />
+        <StyledInput
+          label="Task Description (optional)"
+          name="name"
+          placeholder="Enter task description"
+          value={description}
+          onChange={handleDescriptionChange}
+          multiline
+          rows={4}
+          focused
+          error={descriptionError !== ""}
+          helperText={descriptionError}
+        />
+        <StyledInput
+          label="Task Deadline (optional)"
+          name="name"
+          placeholder="Enter deadline date"
+          type="datetime-local"
+          value={deadline}
+          onChange={handleDeadlineChange}
+          focused
+        />
+        {user.settings[0].enableCategories !== undefined && user.settings[0].enableCategories && (
+          <>
+            <br />
+            <Typography>Category (optional)</Typography>
+
+            <CategorySelect
+              user={user}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+              width="400px"
+            />
+            <Link to="/categories">
+              <Button
+                sx={{
+                  margin: "8px 0 24px 0 ",
+                  padding: "12px 24px",
+                  borderRadius: "12px",
+                }}
+              >
+                <Edit /> &nbsp; Modify Categories
+              </Button>
+            </Link>
+          </>
+        )}
+        <Typography>Color</Typography>
+        <ColorPicker
+          color={color}
+          onColorChange={(color) => {
+            setColor(color);
+          }}
+        />
+
+        {/* <Typography>Color</Typography>
+        <ColorPicker type="color" value={color} onChange={handleColorChange} /> */}
+        <AddTaskButton
+          onClick={handleAddTask}
+          disabled={
+            name.length > TASK_NAME_MAX_LENGTH || description.length > DESCRIPTION_MAX_LENGTH
+          }
+        >
+          Create Task
+        </AddTaskButton>
+      </Container>
+    </>
+  );
+};
+```
+src/pages/Categories.tsx
+```tsx
+import { useEffect, useState } from "react";
+import { ColorPicker, CustomEmojiPicker, TopBar } from "../components";
+import { Category, UserProps } from "../types/user";
+import { useNavigate } from "react-router-dom";
+import { Emoji } from "emoji-picker-react";
+import styled from "@emotion/styled";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import { CATEGORY_NAME_MAX_LENGTH } from "../constants";
+import { getFontColorFromHex } from "../utils";
+import { ColorPalette, fadeIn } from "../styles";
+import toast from "react-hot-toast";
+import { NotFound } from "./NotFound";
+
+export const Categories = ({ user, setUser }: UserProps) => {
+  const [name, setName] = useState<string>("");
+  const [nameError, setNameError] = useState<string>("");
+  const [emoji, setEmoji] = useState<string | undefined>();
+  const [color, setColor] = useState<string>(ColorPalette.purple);
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
+
+  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
+  const [editName, setEditName] = useState<string>("");
+  const [editNameError, setEditNameError] = useState<string>("");
+  const [editEmoji, setEditEmoji] = useState<string | undefined>();
+  const [editColor, setEditColor] = useState<string>(ColorPalette.purple);
+
+  const n = useNavigate();
+
+  useEffect(() => {
+    document.title = "Todo App - Categories";
+    if (!user.settings[0].enableCategories) {
+      n("/");
+    }
+  }, []);
+
+  useEffect(() => {
+    setEditColor(
+      user.categories.find((cat) => cat.id === selectedCategoryId)?.color || ColorPalette.purple
+    );
+    setEditName(user.categories.find((cat) => cat.id === selectedCategoryId)?.name || "");
+    setEditNameError("");
+  }, [selectedCategoryId]);
+
+  const handleDelete = (categoryId: number) => {
+    if (categoryId) {
+      const categoryName =
+        user.categories.find((category) => category.id === categoryId)?.name || "";
+      const updatedCategories = user.categories.filter((category) => category.id !== categoryId);
+      // Remove the category from tasks that have it associated
+      const updatedTasks = user.tasks.map((task) => {
+        const updatedCategoryList = task.category?.filter((category) => category.id !== categoryId);
+        return {
+          ...task,
+          category: updatedCategoryList,
+        };
+      });
+
+      setUser({
+        ...user,
+        categories: updatedCategories,
+        tasks: updatedTasks,
+      });
+      toast.success(() => (
+        <div>
+          Deleted category - <b>{categoryName}.</b>
+        </div>
+      ));
+    }
+  };
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = event.target.value;
+    setName(newName);
+    if (newName.length > CATEGORY_NAME_MAX_LENGTH) {
+      setNameError(`Name is too long maximum ${CATEGORY_NAME_MAX_LENGTH} characters`);
+    } else {
+      setNameError("");
+    }
+  };
+
+  const handleEditNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = event.target.value;
+    setEditName(newName);
+    if (newName.length > CATEGORY_NAME_MAX_LENGTH) {
+      setEditNameError(`Name is too long maximum ${CATEGORY_NAME_MAX_LENGTH} characters`);
+    } else {
+      setEditNameError("");
+    }
+  };
+
+  const handleAddCategory = () => {
+    if (name !== "") {
+      if (name.length > CATEGORY_NAME_MAX_LENGTH) {
+        return;
+      }
+      const newCategory: Category = {
+        id: new Date().getTime() + Math.floor(Math.random() * 1000),
+        name,
+        emoji: emoji !== "" ? emoji : undefined,
+        color,
+      };
+      toast.success(() => (
+        <div>
+          Added category - <b>{newCategory.name}</b>
+        </div>
+      ));
+      setUser((prevUser) => ({
+        ...prevUser,
+        categories: [...prevUser.categories, newCategory],
+      }));
+
+      setName("");
+      setColor(ColorPalette.purple);
+      setEmoji("");
+    }
+  };
+
+  const handleEditDimiss = () => {
+    setSelectedCategoryId(0);
+    setOpenEditDialog(false);
+    setEditColor(ColorPalette.purple);
+    setEditName("");
+    setEditEmoji(undefined);
+  };
+
+  const handleEditCategory = () => {
+    if (selectedCategoryId) {
+      const updatedCategories = user.categories.map((category) => {
+        if (category.id === selectedCategoryId) {
+          return {
+            ...category,
+            name: editName,
+            emoji: editEmoji || undefined,
+            color: editColor,
+          };
+        }
+        return category;
+      });
+
+      const updatedTasks = user.tasks.map((task) => {
+        const updatedCategoryList = task.category?.map((category) => {
+          if (category.id === selectedCategoryId) {
+            return {
+              id: selectedCategoryId,
+              name: editName,
+              emoji: editEmoji || undefined,
+              color: editColor,
+            };
+          }
+          return category;
+        });
+
+        return {
+          ...task,
+          category: updatedCategoryList,
+        };
+      });
+
+      setUser({
+        ...user,
+        categories: updatedCategories,
+        tasks: updatedTasks,
+      });
+
+      toast.success(() => (
+        <div>
+          Updated category - <b>{editName}</b>
+        </div>
+      ));
+      setOpenEditDialog(false);
+    }
+  };
+
+  if (!user.settings[0].enableCategories) {
+    return <NotFound />;
+  }
+
+  return (
+    <>
+      <TopBar title="Categories" />
+      <Container>
+        {user.categories.length > 0 ? (
+          <CategoriesContainer>
+            {user.categories.map((category) => {
+              const categoryTasks = user.tasks.filter((task) =>
+                task.category?.some((cat) => cat.id === category.id)
+              );
+
+              const completedTasksCount = categoryTasks.reduce(
+                (count, task) => (task.done ? count + 1 : count),
+                0
+              );
+              const totalTasksCount = categoryTasks.length;
+              const completionPercentage =
+                totalTasksCount > 0 ? Math.floor((completedTasksCount / totalTasksCount) * 100) : 0;
+
+              const displayPercentage = totalTasksCount > 0 ? `(${completionPercentage}%)` : "";
+
+              return (
+                <CategoryDiv key={category.id} clr={category.color}>
+                  <CategoryContent>
+                    <span>
+                      {category.emoji && (
+                        <Emoji unified={category.emoji} emojiStyle={user.emojisStyle} />
+                      )}
+                    </span>
+                    &nbsp;
+                    <span style={{ wordBreak: "break-all", fontWeight: 600 }}>{category.name}</span>
+                    <Tooltip title="The percentage of completion of tasks assigned to this category">
+                      <span style={{ opacity: 0.8, fontStyle: "italic" }}>{displayPercentage}</span>
+                    </Tooltip>
+                  </CategoryContent>
+                  <div style={{ display: "flex", gap: "4px" }}>
+                    <ActionButton>
+                      <IconButton
+                        color="primary"
+                        onClick={() => {
+                          setSelectedCategoryId(category.id);
+                          setOpenEditDialog(true);
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </ActionButton>
+                    <ActionButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => {
+                          setSelectedCategoryId(category.id);
+                          if (totalTasksCount > 0) {
+                            // Open delete dialog if there are tasks associated to catagory
+                            setOpenDeleteDialog(true);
+                          } else {
+                            // If no associated tasks, directly handle deletion
+                            handleDelete(category.id);
+                          }
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </ActionButton>
+                  </div>
+                </CategoryDiv>
+              );
+            })}
+          </CategoriesContainer>
+        ) : (
+          <p>You don't have any categories</p>
+        )}
+        <AddContainer>
+          <h2>Add New Category</h2>
+          <CustomEmojiPicker user={user} emoji={emoji} setEmoji={setEmoji} color={color} />
+          <StyledInput
+            focused
+            label="Category name"
+            placeholder="Enter category name"
+            value={name}
+            onChange={handleNameChange}
+            error={nameError !== ""}
+            helperText={nameError}
+          />
+          <Typography>Color</Typography>
+          <ColorPicker
+            color={color}
+            onColorChange={(color) => {
+              setColor(color);
+            }}
+            width={360}
+          />
+          <AddCategoryButton
+            onClick={handleAddCategory}
+            disabled={name.length > CATEGORY_NAME_MAX_LENGTH || name === ""}
+          >
+            Create Category
+          </AddCategoryButton>
+        </AddContainer>
+        <Dialog
+          open={openDeleteDialog}
+          onClose={() => setOpenDeleteDialog(false)}
+          PaperProps={{
+            style: {
+              borderRadius: "24px",
+              padding: "12px",
+              maxWidth: "600px",
+            },
+          }}
+        >
+          <DialogTitle>
+            Confirm deletion of{" "}
+            <b>{user.categories.find((cat) => cat.id === selectedCategoryId)?.name}</b>
+          </DialogTitle>
+
+          <DialogContent>
+            This will remove the category from your list and associated tasks.
+          </DialogContent>
+
+          <DialogActions>
+            <DialogBtn onClick={() => setOpenDeleteDialog(false)}>Cancel</DialogBtn>
+            <DialogBtn
+              onClick={() => {
+                handleDelete(selectedCategoryId);
+                setOpenDeleteDialog(false);
+              }}
+              color="error"
+            >
+              Delete
+            </DialogBtn>
+          </DialogActions>
+        </Dialog>
+        {/* Edit Dialog */}
+        <Dialog
+          open={openEditDialog}
+          onClose={handleEditDimiss}
+          PaperProps={{
+            style: {
+              borderRadius: "24px",
+              padding: "12px",
+              maxWidth: "600px",
+            },
+          }}
+        >
+          <DialogTitle>
+            Edit Category
+            {/* <b>{user.categories.find((cat) => cat.id === selectedCategoryId)?.name}</b> */}
+          </DialogTitle>
+
+          <DialogContent>
+            <CustomEmojiPicker
+              user={user}
+              emoji={
+                user.categories.find((cat) => cat.id === selectedCategoryId)?.emoji || undefined
+              }
+              setEmoji={setEditEmoji}
+              width={300}
+              color={editColor}
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <EditNameInput
+                label="Enter category name"
+                placeholder="Enter category name"
+                value={editName}
+                error={editNameError !== ""}
+                helperText={editNameError}
+                onChange={handleEditNameChange}
+              />
+              <ColorPicker
+                color={editColor}
+                width={300}
+                onColorChange={(clr) => {
+                  setEditColor(clr);
+                }}
+              />
+            </div>
+          </DialogContent>
+
+          <DialogActions>
+            <DialogBtn onClick={handleEditDimiss}>Cancel</DialogBtn>
+            <DialogBtn onClick={handleEditCategory} disabled={editNameError !== ""}>
+              Save
+            </DialogBtn>
+          </DialogActions>
+        </Dialog>
+      </Container>
+    </>
+  );
+};
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 40px;
+`;
+
+const CategoriesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 350px;
+  background: #ffffff15;
+  overflow-y: auto;
+  padding: 24px 18px;
+  border-radius: 18px 0 0 18px;
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 4px;
+    background-color: #ffffff15;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #ffffff30;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #ffffff50;
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background-color: #ffffff15;
+  }
+`;
+
+const AddContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const CategoryDiv = styled.div<{ clr: string }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 350px;
+  margin: 6px 0;
+  padding: 12px;
+  border-radius: 18px;
+  background: ${(props) => props.clr};
+  color: ${(props) => getFontColorFromHex(props.clr)};
+  animation: ${fadeIn} 0.5s ease-in-out;
+`;
+
+const CategoryContent = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  margin: 0 4px;
+  gap: 4px;
+`;
+
+const ActionButton = styled.div`
+  background: #ffffffcd;
+  border-radius: 100%;
+  margin: 0 4px;
+`;
+const StyledInput = styled(TextField)`
+  margin: 12px;
+  .MuiOutlinedInput-root {
+    border-radius: 16px;
+    transition: 0.3s all;
+    width: 350px;
+    color: white;
+  }
+`;
+
+const EditNameInput = styled(TextField)`
+  margin-top: 8px;
+  .MuiOutlinedInput-root {
+    border-radius: 16px;
+    transition: 0.3s all;
+    width: 300px;
+  }
+`;
+
+export const AddCategoryButton = styled(Button)`
+  border: none;
+  padding: 18px 48px;
+  font-size: 24px;
+  background: ${ColorPalette.purple};
+  color: #ffffff;
+  border-radius: 999px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s all;
+  margin: 20px;
+  width: 350px;
+  text-transform: capitalize;
+  &:hover {
+    box-shadow: 0px 0px 24px 0px #7614ff;
+    background: ${ColorPalette.purple};
+  }
+  &:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.7;
+    color: white;
+  }
+`;
+const DialogBtn = styled(Button)`
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 16px;
+  margin: 8px;
+`;
+```
+src/pages/Home.tsx
+```tsx
+import { useState, useEffect, ReactNode } from "react";
+import { AddTaskBtn, Tasks } from "../components";
+import {
+  ColorPalette,
+  GreetingHeader,
+  GreetingText,
+  Offline,
+  ProgressPercentageContainer,
+  StyledProgress,
+  TaskCompletionText,
+  TaskCountHeader,
+  TaskCountTextContainer,
+  TasksCount,
+  TasksCountContainer,
+} from "../styles";
+import { UserProps } from "../types/user";
+import { displayGreeting, getRandomGreeting, getTaskCompletionText } from "../utils";
+import { Emoji } from "emoji-picker-react";
+import { Box, Typography } from "@mui/material";
+import { useOnlineStatus } from "../hooks/useOnlineStatus";
+import { WifiOff } from "@mui/icons-material";
+
+export const Home = ({ user, setUser }: UserProps) => {
+  const [randomGreeting, setRandomGreeting] = useState<string | ReactNode>("");
+  const [greetingKey, setGreetingKey] = useState<number>(0);
+  const [completedTasksCount, setCompletedTasksCount] = useState<number>(0);
+  const [tasksWithDeadlineTodayCount, setTasksWithDeadlineTodayCount] = useState<number>(0);
+
+  const completedTaskPercentage = (completedTasksCount / user.tasks.length) * 100;
+
+  const isOnline = useOnlineStatus();
+
+  useEffect(() => {
+    setRandomGreeting(getRandomGreeting());
+    document.title = "Todo App";
+
+    const interval = setInterval(() => {
+      setRandomGreeting(getRandomGreeting());
+      setGreetingKey((prevKey) => prevKey + 1); // Update the key on each interval
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const completedCount = user.tasks.filter((task) => task.done).length;
+    setCompletedTasksCount(completedCount);
+
+    const today = new Date().setHours(0, 0, 0, 0);
+
+    const count = user.tasks.filter((task) => {
+      if (task.deadline) {
+        const taskDeadline = new Date(task.deadline).setHours(0, 0, 0, 0);
+        return taskDeadline === today && !task.done;
+      }
+      return false;
+    }).length;
+
+    setTasksWithDeadlineTodayCount(count);
+  }, [user.tasks]);
+
+  const replaceEmojiCodes = (text: string): ReactNode[] => {
+    const emojiRegex = /\*\*(.*?)\*\*/g;
+    const parts = text.split(emojiRegex);
+
+    return parts.map((part, index) => {
+      if (index % 2 === 1) {
+        // It's an emoji code, render Emoji component
+        const emojiCode = part.trim();
+        return <Emoji key={index} size={20} unified={emojiCode} emojiStyle={user.emojisStyle} />;
+      } else {
+        // It's regular text
+        return part;
+      }
+    });
+  };
+
+  const renderGreetingWithEmojis = (text: string | ReactNode) => {
+    if (typeof text === "string") {
+      return replaceEmojiCodes(text);
+    } else {
+      // It's already a ReactNode, no need to process
+      return text;
+    }
+  };
+
+  return (
+    <>
+      <GreetingHeader>
+        <Emoji unified="1f44b" emojiStyle={user.emojisStyle} /> &nbsp; {displayGreeting()}
+        {user.name && ", " + user.name}
+      </GreetingHeader>
+      <GreetingText key={greetingKey}>{renderGreetingWithEmojis(randomGreeting)}</GreetingText>
+      {!isOnline && (
+        <Offline>
+          <WifiOff /> You're offline but you can use the app!
+        </Offline>
+      )}
+      {user.tasks.length > 0 && (
+        <TasksCountContainer>
+          <TasksCount glow={user.settings[0].enableGlow}>
+            <Box sx={{ position: "relative", display: "inline-flex" }}>
+              <StyledProgress
+                variant="determinate"
+                value={completedTaskPercentage}
+                size={64}
+                thickness={5}
+                style={{
+                  filter: user.settings[0].enableGlow
+                    ? `drop-shadow(0 0 6px ${ColorPalette.purple})`
+                    : "none",
+                }}
+              />
+
+              <ProgressPercentageContainer>
+                <Typography
+                  variant="caption"
+                  component="div"
+                  color="white"
+                  sx={{ fontSize: "16px", fontWeight: 500 }}
+                >{`${Math.round(completedTaskPercentage)}%`}</Typography>
+              </ProgressPercentageContainer>
+            </Box>
+            <TaskCountTextContainer>
+              <TaskCountHeader>
+                You have {user.tasks.length - completedTasksCount} unfinished tasks{" "}
+                {completedTasksCount > 0 && `and ${completedTasksCount} done`}
+              </TaskCountHeader>
+              <TaskCompletionText>
+                {getTaskCompletionText(completedTaskPercentage)}
+              </TaskCompletionText>
+              {tasksWithDeadlineTodayCount > 0 && (
+                <span>Tasks due today: {tasksWithDeadlineTodayCount}</span>
+              )}
+            </TaskCountTextContainer>
+          </TasksCount>
+        </TasksCountContainer>
+      )}
+
+      <Tasks user={user} setUser={setUser} />
+
+      <AddTaskBtn animate={user.tasks.length === 0} user={user} />
+    </>
+  );
+};
+```
+src/pages/ImportExport.tsx
+```tsx
+import { useEffect, useRef, useState } from "react";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import { TopBar } from "../components";
+import { Task, UserProps } from "../types/user";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import styled from "@emotion/styled";
+import { Emoji } from "emoji-picker-react";
+import { FileDownload, FileUpload, Info } from "@mui/icons-material";
+import { exportTasksToJson } from "../utils";
+import { IconButton, Tooltip } from "@mui/material";
+import {
+  CATEGORY_NAME_MAX_LENGTH,
+  DESCRIPTION_MAX_LENGTH,
+  TASK_NAME_MAX_LENGTH,
+} from "../constants";
+import toast from "react-hot-toast";
+import { ColorPalette } from "../styles";
+
+export const ImportExport = ({ user, setUser }: UserProps) => {
+  const [selectedTasks, setSelectedTasks] = useState<number[]>([]); // Array of selected task IDs
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleTaskClick = (taskId: number) => {
+    setSelectedTasks((prevSelectedTasks) =>
+      prevSelectedTasks.includes(taskId)
+        ? prevSelectedTasks.filter((id) => id !== taskId)
+        : [...prevSelectedTasks, taskId]
+    );
+  };
+
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+  };
+
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    handleImport(file);
+    console.log(file);
+  };
+  const handleExport = () => {
+    const tasksToExport = user.tasks.filter((task: Task) => selectedTasks.includes(task.id));
+    exportTasksToJson(tasksToExport);
+    toast(
+      (t) => (
+        <div>
+          Exported tasks:{" "}
+          <ul>
+            {tasksToExport.map((task) => (
+              <li key={task.id}>
+                <ListContent>
+                  <Emoji unified={task.emoji || ""} size={20} emojiStyle={user.emojisStyle} />
+                  <span>{task.name}</span>
+                </ListContent>
+              </li>
+            ))}
+          </ul>
+          <Button
+            variant="outlined"
+            sx={{ width: "100%", p: "12px 24px", borderRadius: "16px", fontSize: "16px" }}
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Dimiss
+          </Button>
+        </div>
+      )
+      // { icon: <FileDownload /> }
+    );
+  };
+
+  const handleExportAll = () => {
+    exportTasksToJson(user.tasks);
+    toast.success(`Exported all tasks (${user.tasks.length})`);
+  };
+
+  const handleImport = (taskFile: File) => {
+    const file = taskFile;
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const importedTasks = JSON.parse(e.target?.result as string) as Task[];
+
+          if (!Array.isArray(importedTasks)) {
+            toast.error("Imported file has an invalid structure.");
+            return;
+          }
+          // Check if any imported task property exceeds the maximum length
+
+          const invalidTasks = importedTasks.filter((task) => {
+            const isInvalid =
+              (task.name && task.name.length > TASK_NAME_MAX_LENGTH) ||
+              (task.description && task.description.length > DESCRIPTION_MAX_LENGTH) ||
+              (task.category &&
+                task.category.some((cat) => cat.name.length > CATEGORY_NAME_MAX_LENGTH));
+
+            return isInvalid;
+          });
+
+          if (invalidTasks.length > 0) {
+            const invalidTaskNames = invalidTasks.map((task) => task.name).join(", ");
+            console.error(
+              `These tasks cannot be imported due to exceeding maximum character lengths: ${invalidTaskNames}`
+            );
+            toast.error(`Some tasks cannot be imported due to exceeding maximum character lengths`);
+            return;
+          }
+
+          // Update user.categories if imported categories don't exist
+          const updatedCategories = user.categories.slice(); // Create a copy of the existing categories
+
+          importedTasks.forEach((task) => {
+            task.category !== undefined &&
+              task.category.forEach((importedCat) => {
+                const existingCategory = updatedCategories.find((cat) => cat.id === importedCat.id);
+
+                if (!existingCategory) {
+                  updatedCategories.push(importedCat);
+                } else {
+                  // Replace the existing category with the imported one if the ID matches
+                  Object.assign(existingCategory, importedCat);
+                }
+              });
+          });
+
+          setUser((prevUser) => ({
+            ...prevUser,
+            categories: updatedCategories,
+          }));
+          // Proceed with merging the imported tasks as before
+          const mergedTasks = [...user.tasks, ...importedTasks];
+
+          // Remove duplicates based on task IDs (if any)
+          // const uniqueTasks = Array.from(new Set(mergedTasks.map((task) => task.id)))
+          //   .map((id) => mergedTasks.find((task) => task.id === id))
+          //   .filter(Boolean) as Task[]; // Remove any 'undefined' values
+
+          const uniqueTasks = mergedTasks.reduce((acc, task) => {
+            const existingTask = acc.find((t) => t.id === task.id);
+            if (existingTask) {
+              return acc.map((t) => (t.id === task.id ? task : t));
+            } else {
+              return [...acc, task];
+            }
+          }, [] as Task[]);
+
+          setUser((prevUser) => ({ ...prevUser, tasks: uniqueTasks }));
+
+          // Prepare the list of imported task names
+          const importedTaskNames = importedTasks.map((task) => task.name).join(", ");
+
+          // Display the alert with the list of imported task names
+          console.log(`Imported Tasks: ${importedTaskNames}`);
+          toast((t) => (
+            <div>
+              Tasks Successfully Imported from <br />
+              <i style={{ wordBreak: "break-all" }}>{file.name}</i>
+              <ul>
+                {importedTasks.map((task) => (
+                  <li key={task.id}>
+                    <ListContent>
+                      <Emoji unified={task.emoji || ""} size={20} emojiStyle={user.emojisStyle} />
+                      <span>{task.name}</span>
+                    </ListContent>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                variant="outlined"
+                sx={{ width: "100%", p: "12px 24px", borderRadius: "16px", fontSize: "16px" }}
+                onClick={() => toast.dismiss(t.id)}
+              >
+                Dimiss
+              </Button>
+            </div>
+          ));
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
+        } catch (error) {
+          console.error(`Error parsing the imported file ${file.name}:`, error);
+          // toast.error(`Error parsing the imported file -  ${file.name}`);
+          toast.error(
+            <div style={{ wordBreak: "break-all" }}>
+              Error parsing the imported file: <br /> <i>{file.name}</i>
+            </div>
+          );
+        }
+      };
+
+      reader.readAsText(file);
+    }
+  };
+
+  // clear file input after logout
+  useEffect(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [user.createdAt]);
+
+  return (
+    <>
+      <TopBar title="Import/Export" />
+      <h2
+        style={{
+          textAlign: "center",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        Select Tasks To Export&nbsp;
+        <Tooltip title="Duplicates will be removed during import">
+          <IconButton style={{ color: "#ffffff" }}>
+            <Info />
+          </IconButton>
+        </Tooltip>
+      </h2>
+
+      <Container>
+        {user.tasks.length > 0 ? (
+          user.tasks.map((task: Task) => (
+            <TaskContainer
+              key={task.id}
+              backgroundclr={task.color}
+              onClick={() => handleTaskClick(task.id)}
+              selected={selectedTasks.includes(task.id)}
+            >
+              <Checkbox size="medium" checked={selectedTasks.includes(task.id)} />
+              <Typography
+                variant="body1"
+                component="span"
+                sx={{ display: "flex", alignItems: "center", gap: "6px" }}
+              >
+                <Emoji size={24} unified={task.emoji || ""} emojiStyle={user.emojisStyle} />{" "}
+                {task.name}
+              </Typography>
+            </TaskContainer>
+          ))
+        ) : (
+          <h3 style={{ opacity: 0.8, fontStyle: "italic" }}>You don't have any tasks to export</h3>
+        )}
+      </Container>
+
+      <Box
+        component="div"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: "24px",
+        }}
+      >
+        <StyledButton
+          onClick={handleExport}
+          disabled={selectedTasks.length === 0}
+          variant="outlined"
+        >
+          <FileDownload /> &nbsp; Export Selected to JSON{" "}
+          {selectedTasks.length > 0 && `[${selectedTasks.length}]`}
+        </StyledButton>
+
+        <StyledButton
+          onClick={handleExportAll}
+          disabled={user.tasks.length === 0}
+          variant="outlined"
+        >
+          <FileDownload /> &nbsp; Export All Tasks to JSON
+        </StyledButton>
+
+        <h2 style={{ textAlign: "center" }}>Import Tasks From JSON</h2>
+
+        {/Windows|Linux|Macintosh/i.test(navigator.userAgent) && (
+          <div style={{ width: "300px" }}>
+            <DropZone onDragOver={handleDragOver} onDrop={handleDrop}>
+              <FileUpload fontSize="large" color="primary" />
+              <p style={{ fontWeight: 500, fontSize: "16px", margin: 0 }}>
+                Drop JSON file here to import tasks{" "}
+              </p>
+            </DropZone>
+          </div>
+        )}
+
+        <input
+          accept=".json"
+          id="import-file"
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const file = e.target.files && e.target.files[0];
+            file && handleImport(file);
+          }}
+        />
+        <label htmlFor="import-file">
+          <Button
+            component="span"
+            variant="outlined"
+            sx={{
+              padding: "12px 18px",
+              borderRadius: "14px",
+              width: "300px",
+            }}
+          >
+            <FileUpload /> &nbsp; Select JSON File
+          </Button>
+        </label>
+      </Box>
+    </>
+  );
+};
+
+const TaskContainer = styled(Box)<{ backgroundclr: string; selected: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  margin: 8px;
+  padding: 10px 4px;
+  border-radius: 16px;
+  background: #19172b94;
+  border: 2px solid ${(props) => props.backgroundclr};
+  box-shadow: ${(props) => props.selected && `0 0 8px 1px ${props.backgroundclr}`};
+  transition: 0.3s all;
+  width: 300px;
+  cursor: "pointer";
+`;
+
+const ListContent = styled.div`
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 6px;
+`;
+
+const DropZone = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  border: 2px dashed ${ColorPalette.purple};
+  border-radius: 16px;
+  padding: 32px 64px;
+  text-align: center;
+  max-width: 300px;
+`;
+
+const Container = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  max-height: 350px;
+
+  overflow-y: auto;
+
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 4px;
+    background-color: #ffffff15;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #ffffff30;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #ffffff50;
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background-color: #ffffff15;
+  }
+`;
+
+const StyledButton = styled(Button)`
+  padding: 12px 18px;
+  border-radius: 14px;
+  width: 300px;
+
+  &:disabled {
+    color: #ffffff58;
+    border-color: #ffffff58;
+  }
+`;
+```
+src/pages/NotFound.tsx
+```tsx
+import styled from "@emotion/styled";
+import { ArrowBackIosNew } from "@mui/icons-material";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { ColorPalette } from "../styles";
+import { useEffect } from "react";
+import TaskNotFound from "../assets/TaskNotFound.png";
+
+export const NotFound = () => {
+  const n = useNavigate();
+
+  useEffect(() => {
+    document.title = "Todo App - Page Not Found";
+  }, []);
+
+  return (
+    <Container>
+      <ErrorCode>404</ErrorCode>
+
+      <NotFoundImg src={TaskNotFound} />
+      <Description>
+        Page{" "}
+        <PathName>
+          {location.pathname.length > 32
+            ? location.pathname.substring(0, 29) + "..."
+            : location.pathname}
+        </PathName>{" "}
+        was not found.
+      </Description>
+      <BackButton variant="outlined" onClick={() => n("/")}>
+        <ArrowBackIosNew /> &nbsp; Go back to tasks
+      </BackButton>
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100vw;
+  line-height: 2em;
+`;
+
+const ErrorCode = styled.h1`
+  font-size: 128px;
+  color: ${ColorPalette.purple};
+  text-shadow: 0 0 32px #b624ffa9;
+`;
+
+const Description = styled.p`
+  font-size: 22px;
+  opacity: 0.9;
+  line-height: 1.8em;
+  margin: 32px;
+`;
+
+const BackButton = styled(Button)`
+  padding: 12px 20px;
+  font-size: 18px;
+  border-radius: 16px;
+  margin: 16px;
+`;
+
+const NotFoundImg = styled.img`
+  width: 350px;
+  margin-left: 32px;
+  filter: drop-shadow(0px 0px 128px ${ColorPalette.purple});
+`;
+
+const PathName = styled.code`
+  background: black;
+  font-family: consolas !important;
+  padding: 4px 6px;
+  border-radius: 8px;
+`;
+```
+src/pages/TaskDetails.tsx
+```tsx
+import { useParams } from "react-router-dom";
+import { UserProps } from "../types/user";
+import { TopBar } from "../components";
+import styled from "@emotion/styled";
+import { CategoryChip } from "../styles";
+import { Avatar } from "@mui/material";
+import { NotFound } from "./NotFound";
+import { Clear, Done } from "@mui/icons-material";
+import { Emoji, EmojiStyle } from "emoji-picker-react";
+
+export const TaskDetails = ({ user }: UserProps) => {
+  const { id } = useParams();
+  const formattedId = id?.replace(".", "");
+  const task = user.tasks.find((task) => task.id.toString().replace(".", "") === formattedId);
+
+  if (!task) {
+    return <NotFound />;
+  }
+
+  return (
+    <>
+      <TopBar title="Task Details" />
+      <Container
+        style={{ border: `2px solid ${task.color}`, boxShadow: `0 0 300px -50px ${task.color}` }}
+      >
+        <TaskName>Task: {task.name}</TaskName>
+        <TaskTable>
+          <tbody>
+            <TableRow>
+              <TableHeader>Emoji:</TableHeader>
+              <TableData>
+                {task.emoji ? (
+                  <>
+                    <Emoji unified={task?.emoji || ""} size={32} emojiStyle={user.emojisStyle} /> (
+                    {task.emoji})
+                  </>
+                ) : (
+                  <i>none</i>
+                )}
+              </TableData>
+            </TableRow>
+
+            <TableRow>
+              <TableHeader>Description:</TableHeader>
+              <TableData>{task?.description}</TableData>
+            </TableRow>
+            <TableRow>
+              <TableHeader>Color:</TableHeader>
+              <TableData>
+                <ColorSquare clr={task.color} /> {task.color.toUpperCase()}
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableHeader>Created:</TableHeader>
+              <TableData>{new Date(task?.date || "").toLocaleString()}</TableData>
+            </TableRow>
+            {task?.lastSave && (
+              <TableRow>
+                <TableHeader>Last edited:</TableHeader>
+                <TableData>{new Date(task?.lastSave || "").toLocaleString()}</TableData>
+              </TableRow>
+            )}
+            {task?.deadline && (
+              <TableRow>
+                <TableHeader>Task deadline:</TableHeader>
+                <TableData>{new Date(task?.deadline || "").toLocaleString()}</TableData>
+              </TableRow>
+            )}
+            <TableRow>
+              <TableHeader>Done:</TableHeader>
+              <TableData>
+                {task?.done ? <Done /> : <Clear />} {task?.done.toString()}
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableHeader>Pinned:</TableHeader>
+              <TableData>
+                {task?.pinned ? <Done /> : <Clear />} {task?.pinned.toString()}
+              </TableData>
+            </TableRow>
+            <TableRow>
+              <TableHeader>Categories:</TableHeader>
+              <TableData>
+                <CategoryContainer>
+                  {task?.category?.map((cat) => (
+                    <CategoryChip
+                      key={cat.id}
+                      backgroundclr={cat.color}
+                      glow={false}
+                      label={cat.name}
+                      avatar={
+                        cat.emoji ? (
+                          <Avatar
+                            alt={cat.name}
+                            sx={{
+                              background: "transparent",
+                              borderRadius: "0px",
+                            }}
+                          >
+                            {cat.emoji &&
+                              (user.emojisStyle === EmojiStyle.NATIVE ? (
+                                <div>
+                                  <Emoji
+                                    size={18}
+                                    unified={cat.emoji}
+                                    emojiStyle={EmojiStyle.NATIVE}
+                                  />
+                                </div>
+                              ) : (
+                                <Emoji
+                                  size={20}
+                                  unified={cat.emoji}
+                                  emojiStyle={user.emojisStyle}
+                                />
+                              ))}
+                          </Avatar>
+                        ) : (
+                          <></>
+                        )
+                      }
+                    />
+                  ))}
+                </CategoryContainer>
+              </TableData>
+            </TableRow>
+          </tbody>
+        </TaskTable>
+      </Container>
+    </>
+  );
+};
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: ${(props) => props.color};
+  padding: 16px;
+  border-radius: 32px;
+  margin: 0 auto;
+  margin-top: 100px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (min-width: 768px) {
+    padding: 24px;
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 50%;
+  }
+`;
+
+const TaskName = styled.h2`
+  margin: 8px;
+  text-align: center;
+  font-size: 1.5em;
+
+  @media (min-width: 768px) {
+    font-size: 1.8em;
+  }
+`;
+
+const TaskTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+`;
+
+const TableRow = styled.tr`
+  border-bottom: 2px solid #d9d9d9bc;
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const TableHeader = styled.th`
+  text-align: left;
+  padding: 8px;
+  font-size: 1em;
+
+  @media (min-width: 768px) {
+    font-size: 1.2em;
+  }
+`;
+
+const TableData = styled.td`
+  text-align: left;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1em;
+
+  @media (min-width: 768px) {
+    font-size: 1.1em;
+  }
+`;
+
+const ColorSquare = styled.div<{ clr: string }>`
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: ${({ clr }) => clr};
+`;
+
+const CategoryContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+`;
+```
+src/pages/UserSettings.tsx
+```tsx
+import {
+  Avatar,
+  Badge,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField,
+  Tooltip,
+} from "@mui/material";
+import { UserProps } from "../types/user";
+
+import { useEffect, useState } from "react";
+import styled from "@emotion/styled";
+import { AddAPhoto, Delete, Logout, Settings } from "@mui/icons-material";
+import { PROFILE_PICTURE_MAX_LENGTH, USER_NAME_MAX_LENGTH } from "../constants";
+import { SettingsDialog, TopBar } from "../components";
+import { ColorPalette, DialogBtn } from "../styles";
+import { defaultUser } from "../constants/defaultUser";
+import toast from "react-hot-toast";
+
+export const UserSettings = ({ user, setUser }: UserProps) => {
+  const [name, setName] = useState<string>("");
+  const [profilePictureURL, setProfilePictureURL] = useState<string>("");
+  const [openChangeImage, setOpenChangeImage] = useState<boolean>(false);
+  const [logoutConfirmationOpen, setLogoutConfirmationOpen] = useState<boolean>(false);
+
+  const [openSettings, setOpenSettings] = useState<boolean>(false);
+
+  useEffect(() => {
+    document.title = `Todo App - User ${user.name ? `(${user.name})` : ""}`;
+  }, [user.name]);
+
+  const handleSaveName = () => {
+    setUser({ ...user, name });
+    toast.success(() => (
+      <div>
+        Changed user name to - <b>{name}</b>.
+      </div>
+    ));
+    setName("");
+  };
+
+  const handleOpenImageDialog = () => {
+    setOpenChangeImage(true);
+  };
+  const handleCloseImageDialog = () => {
+    setOpenChangeImage(false);
+  };
+
+  const handleLogoutConfirmationClose = () => {
+    setLogoutConfirmationOpen(false);
+  };
+  const handleLogout = () => {
+    setUser(defaultUser);
+    handleLogoutConfirmationClose();
+    toast.success("You have been successfully logged out");
+  };
+  return (
+    <>
+      <TopBar title="User Profile" />
+      <Container>
+        <IconButton
+          onClick={() => setOpenSettings(true)}
+          size="large"
+          sx={{
+            position: "absolute",
+            top: "24px",
+            right: "24px",
+          }}
+        >
+          <Settings fontSize="large" />
+        </IconButton>
+        <Tooltip title={user.profilePicture ? "Change profile picture" : "Add profile picture"}>
+          <Badge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            badgeContent={
+              <Avatar
+                onClick={handleOpenImageDialog}
+                sx={{
+                  background: "#9c9c9c81",
+                  backdropFilter: "blur(6px)",
+                  cursor: "pointer",
+                }}
+              >
+                <AddAPhoto />
+              </Avatar>
+            }
+          >
+            <Avatar
+              onClick={handleOpenImageDialog}
+              src={(user.profilePicture as string) || undefined}
+              onError={() => {
+                setUser((prevUser) => ({
+                  ...prevUser,
+                  profilePicture: null,
+                }));
+                throw new Error("Error in profile picture URL");
+              }}
+              sx={{
+                width: "96px",
+                height: "96px",
+                cursor: "pointer",
+              }}
+            />
+          </Badge>
+        </Tooltip>
+        <UserName>{user.name || "User"}</UserName>
+        <Tooltip
+          title={`Created at: ${new Date(user.createdAt).toLocaleDateString()} • ${new Date(
+            user.createdAt
+          ).toLocaleTimeString()}`}
+        >
+          <CreatedAtDate>
+            Registered since {new Date(user.createdAt).toLocaleDateString()}
+          </CreatedAtDate>
+        </Tooltip>
+
+        <StyledInput
+          label={user.name === null ? "Add Name" : "Change Name"}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSaveName()}
+          error={name.length > USER_NAME_MAX_LENGTH}
+          helperText={
+            name.length > USER_NAME_MAX_LENGTH
+              ? `Name is too long maximum ${USER_NAME_MAX_LENGTH} characters`
+              : ""
+          }
+        />
+
+        <SaveBtn
+          onClick={handleSaveName}
+          disabled={name.length > USER_NAME_MAX_LENGTH || name === ""}
+        >
+          Save name
+        </SaveBtn>
+
+        <Button
+          color="error"
+          variant="outlined"
+          sx={{ padding: "8px 20px", borderRadius: "14px", marginTop: "8px" }}
+          onClick={() => setLogoutConfirmationOpen(true)}
+        >
+          <Logout />
+          &nbsp; Logout
+        </Button>
+      </Container>
+      <Dialog
+        open={openChangeImage}
+        onClose={handleCloseImageDialog}
+        PaperProps={{
+          style: { borderRadius: "24px", padding: "12px" },
+        }}
+      >
+        <DialogTitle>Change Profile Picture</DialogTitle>
+        <DialogContent>
+          <StyledInput
+            autoFocus
+            label="Link to profile picture"
+            sx={{ margin: "8px 0" }}
+            value={profilePictureURL}
+            error={profilePictureURL.length > PROFILE_PICTURE_MAX_LENGTH}
+            helperText={
+              profilePictureURL.length > PROFILE_PICTURE_MAX_LENGTH
+                ? `URL is too long maximum ${PROFILE_PICTURE_MAX_LENGTH} characters`
+                : ""
+            }
+            onChange={(e) => {
+              setProfilePictureURL(e.target.value);
+            }}
+          />
+          <br />
+          <Button
+            onClick={() => {
+              handleCloseImageDialog();
+              toast.success("Deleted profile image");
+              setUser({ ...user, profilePicture: null });
+            }}
+            color="error"
+            variant="outlined"
+            sx={{ margin: "16px 0", padding: "8px 18px", borderRadius: "12px" }}
+          >
+            <Delete /> &nbsp; Delete Image
+          </Button>
+        </DialogContent>
+        <DialogActions>
+          <DialogBtn onClick={handleCloseImageDialog}>Cancel</DialogBtn>
+          <DialogBtn
+            disabled={
+              profilePictureURL.length > PROFILE_PICTURE_MAX_LENGTH ||
+              !profilePictureURL.startsWith("https://")
+            }
+            onClick={() => {
+              if (
+                profilePictureURL.length <= PROFILE_PICTURE_MAX_LENGTH &&
+                profilePictureURL.startsWith("https://")
+              ) {
+                handleCloseImageDialog();
+                setUser((prevUser) => ({
+                  ...prevUser,
+                  profilePicture: profilePictureURL,
+                }));
+
+                toast.success("Changed profile picture");
+              }
+            }}
+          >
+            Save
+          </DialogBtn>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={logoutConfirmationOpen}
+        onClose={handleLogoutConfirmationClose}
+        PaperProps={{
+          style: {
+            borderRadius: "24px",
+            padding: "10px",
+          },
+        }}
+      >
+        <DialogTitle>Logout Confirmation</DialogTitle>
+        <DialogContent>
+          Are you sure you want to logout? <b>Your tasks will not be saved.</b>
+        </DialogContent>
+        <DialogActions>
+          <DialogBtn onClick={handleLogoutConfirmationClose}>Cancel</DialogBtn>
+          <DialogBtn onClick={handleLogout} color="error">
+            Logout
+          </DialogBtn>
+        </DialogActions>
+      </Dialog>
+      <SettingsDialog
+        open={openSettings}
+        onClose={() => setOpenSettings(false)}
+        user={user}
+        setUser={setUser}
+      />
+    </>
+  );
+};
+
+const Container = styled.div`
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 64px 48px;
+  border-radius: 48px;
+  box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.25);
+  background: #f5f5f5;
+  color: ${ColorPalette.fontDark};
+  border: 4px solid ${ColorPalette.purple};
+  box-shadow: 0 0 72px -1px #b624ffbf;
+  display: flex;
+  gap: 14px;
+  flex-direction: column;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const StyledInput = styled(TextField)`
+  & .MuiInputBase-root {
+    border-radius: 16px;
+    width: 300px;
+  }
+`;
+const SaveBtn = styled(Button)`
+  width: 300px;
+  border: none;
+  background: ${ColorPalette.purple};
+  color: white;
+  font-size: 18px;
+  padding: 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  text-transform: capitalize;
+  &:hover {
+    background: ${ColorPalette.purple};
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    color: white;
+  }
+`;
+
+const UserName = styled.span`
+  font-size: 20px;
+  font-weight: 500;
+`;
+
+const CreatedAtDate = styled.span`
+  font-style: italic;
+  font-weight: 300;
+  opacity: 0.8;
+`;
+
+// const Beta = styled.span`
+//   background: #0e8e0e;
+//   color: #00ff00;
+//   font-size: 12px;
+//   letter-spacing: 0.03em;
+//   padding: 2px 6px;
+//   border-radius: 5px;
+//   font-weight: 600;
+//   box-shadow: 0 0 4px 0 #0e8e0e91;
+// `;
+```
+src/layouts/MainLayout.tsx
+```tsx
+import { ReactNode } from "react";
+import { BottomNav, ProfileAvatar } from "../components";
+import { UserProps } from "../types/user";
+
+interface MainLayoutProps extends UserProps {
+  children: ReactNode;
+}
+
+export const MainLayout = ({ children, user, setUser }: MainLayoutProps) => {
+  return (
+    <>
+      <ProfileAvatar user={user} setUser={setUser} />
+      {children}
+      <div style={{ marginTop: "128px" }} />
+      <BottomNav user={user} />
+    </>
+  );
+};
+```
+src/hooks/useOnlineStatus.ts
+```ts
+import { useState, useEffect } from "react";
+
+/**
+ * Hook that checks if a user is currently online.
+ * @returns {boolean} Whether or not the user is online.
+ */
+export const useOnlineStatus = (): boolean => {
+  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  return isOnline;
+};
+```
+src/hooks/useResponsiveDisplay.ts
+```ts
+import { useEffect, useState } from "react";
+/**
+ * A custom React hook to determine if the current device is a smaller device
+ * based on the screen width.
+ * @param {number} [breakpoint=768] - The breakpoint in pixels at which a device is considered "smaller".
+ * @returns {boolean} - A boolean value indicating whether the current device is a smaller device.
+ */
+export const useResponsiveDisplay = (breakpoint: number = 768): boolean => {
+  const [isSmallerDevice, setIsSmallerDevice] = useState<boolean>(false);
+  const checkScreenSize = () => {
+    setIsSmallerDevice(window.innerWidth < breakpoint);
+  };
+  useEffect(() => {
+    checkScreenSize();
+    const handleResize = () => checkScreenSize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [breakpoint]);
+
+  return isSmallerDevice;
+};
+```
+src/hooks/useStorageState.ts
+```ts
+import { useState, useEffect } from "react";
+/**
+A custom React hook that returns a stateful value and a function to update it, and persists the value in localStorage.
+@param {any} defaultValue - The default value for the state.
+@param {string} key - The key under which the value will be stored in localStorage.
+@returns {[any, Function]} A tuple containing the current state value and a function to update it.
+@example const [count, setCount] = useStorageState(1, "count")
+*/
+export function useStorageState<T>(
+  defaultValue: T,
+  key: string
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+  const [value, setValue] = useState<T>(() => {
+    const stickyValue = window.localStorage.getItem(key);
+    return stickyValue !== null ? JSON.parse(stickyValue) : defaultValue;
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+
+  return [value, setValue];
+}
+```
+src/constants/constants.ts
+```ts
+/**
+ * Maximum length allowed for task names.
+ */
+export const TASK_NAME_MAX_LENGTH = 30;
+
+/**
+ * Maximum length allowed for task descriptions.
+ */
+export const DESCRIPTION_MAX_LENGTH = 200;
+
+/**
+ * Shorter length for displaying descriptions with a "Show More" button.
+ */
+// export const DESCRIPTION_SHORT_LENGTH: number = 100;
+
+/**
+ * Maximum length allowed for user names.
+ */
+export const USER_NAME_MAX_LENGTH = 14;
+
+/**
+ * Maximum length allowed for profile picture URLs.
+ */
+export const PROFILE_PICTURE_MAX_LENGTH = 255;
+
+/**
+ * Maximum length allowed for category names.
+ */
+export const CATEGORY_NAME_MAX_LENGTH = 20;
+
+/**
+ * Maximum number of categories a user can have.
+ */
+export const MAX_CATEGORIES = 4;
+
+/**
+ * Maximum number of tasks a user can have.
+ */
+// export const MAX_TASKS: number = 999;
+```
+src/constants/defaultUser.ts
+```ts
+import { EmojiStyle } from "emoji-picker-react";
+import { User } from "../types/user";
+
+/**
+ * Represents a default user object.
+ */
+export const defaultUser: User = {
+  name: null,
+  createdAt: new Date(),
+  profilePicture: null,
+  emojisStyle: EmojiStyle.APPLE,
+  tasks: [],
+  settings: [
+    {
+      enableCategories: true,
+      doneToBottom: false,
+      enableGlow: true,
+      enableReadAloud: true,
+      voice: "Google UK English Male",
+      voiceVolume: 0.6,
+    },
+  ],
+  categories: [
+    { id: 1, name: "Home", emoji: "1f3e0", color: "#1fff44" },
+    { id: 2, name: "Work", emoji: "1f3e2", color: "#248eff" },
+    { id: 3, name: "Personal", emoji: "1f464", color: "#e843fe" },
+    { id: 4, name: "Health/Fitness", emoji: "1f4aa", color: "#ffdf3d" },
+    { id: 5, name: "Education", emoji: "1f4da", color: "#ff8e24" },
+  ],
+};
+```
+src/constants/index.ts
+```ts
+export {
+  TASK_NAME_MAX_LENGTH,
+  DESCRIPTION_MAX_LENGTH,
+  USER_NAME_MAX_LENGTH,
+  PROFILE_PICTURE_MAX_LENGTH,
+  CATEGORY_NAME_MAX_LENGTH,
+  MAX_CATEGORIES,
+} from "./constants";
+```
+src/components/AddTaskBtn.tsx
+```tsx
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
+import { Add } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { ColorPalette, pulseAnimation } from "../styles";
+import { Button, Tooltip } from "@mui/material";
+import { User } from "../types/user";
+import { useResponsiveDisplay } from "../hooks/useResponsiveDisplay";
+
+interface AddTaskBtnProps {
+  animate: boolean;
+  user: User;
+}
+
+export const AddTaskBtn = ({ animate, user }: AddTaskBtnProps): JSX.Element | null => {
+  const n = useNavigate();
+  const isMobile = useResponsiveDisplay();
+
+  // If it's a mobile device, don't render the button.
+  if (isMobile) {
+    return null;
+  }
+
+  return (
+    <Tooltip title={user.tasks.length > 0 ? "Add New Task" : "Add Task"} placement="left">
+      <Btn
+        animate={animate}
+        glow={user.settings[0].enableGlow}
+        onClick={() => n("add")}
+        aria-label="Add Task"
+      >
+        <Add style={{ fontSize: "38px" }} />
+      </Btn>
+    </Tooltip>
+  );
+};
+
+const Btn = styled(Button)<{ animate: boolean; glow: boolean }>`
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 24px;
+  width: 72px;
+  height: 72px;
+  border-radius: 100%;
+  background-color: ${ColorPalette.purple};
+  color: white;
+  right: 16vw;
+  box-shadow: ${({ glow }) => (glow ? `0px 0px 32px -8px ${ColorPalette.purple}` : "none")};
+  transition: background-color 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    box-shadow: none;
+    background-color: ${ColorPalette.purple};
+    backdrop-filter: blur(6px);
+  }
+
+  ${({ animate }) =>
+    animate &&
+    css`
+      animation: ${pulseAnimation} 1.2s infinite;
+    `}
+
+  @media (max-width: 1024px) {
+    right: 24px;
+  }
+`;
+```
+src/components/BottomNav.tsx
+```tsx
+import { Add, Category, GetApp, Person, TaskAlt } from "@mui/icons-material";
+import { BottomNavigation, BottomNavigationAction, Box, css, styled } from "@mui/material";
+import { ColorPalette, pulseAnimation, slideInBottom } from "../styles";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useResponsiveDisplay } from "../hooks/useResponsiveDisplay";
+import { User } from "../types/user";
+
+interface BottomNavProps {
+  user: User;
+}
+
+/**
+ * Component for rendering the bottom navigation bar.
+ */
+export const BottomNav = ({ user }: BottomNavProps): JSX.Element | null => {
+  const isMobile = useResponsiveDisplay();
+  const location = useLocation();
+  const [value, setValue] = useState<number | undefined>();
+  const n = useNavigate();
+
+  const smallIconSize = "29px";
+
+  // useEffect hook to set the active button based on the current route
+  useEffect(() => {
+    const pathParts = location.pathname.split("/"); // Split the pathname by '/'
+    if (pathParts[1] === "task") {
+      setValue(0); // If the user is on a task page, set the value to 0
+    } else {
+      // Handle other routes as before
+      switch (location.pathname) {
+        case "/categories":
+          setValue(1);
+          break;
+        case "/add":
+          setValue(2);
+          break;
+        case "/import-export":
+          setValue(3);
+          break;
+        case "/user":
+          setValue(4);
+          break;
+        case "/":
+          setValue(0);
+          break;
+        default:
+          setValue(undefined); // Fallback for the undefined route
+      }
+    }
+  }, [location.pathname]);
+
+  // If it's a mobile device, don't render the navigation bar.
+  if (!isMobile) {
+    return null;
+  }
+
+  return (
+    <Container>
+      <StyledBottomNavigation
+        showLabels
+        value={value}
+        onChange={(event, newValue) => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+          setValue(newValue);
+          event.preventDefault();
+        }}
+      >
+        <NavigationButton
+          onClick={() => n("/")}
+          label="Tasks"
+          icon={<TaskAlt sx={{ fontSize: smallIconSize }} />}
+        />
+        <NavigationButton
+          onClick={() => n("/categories")}
+          label="Categories"
+          icon={<Category sx={{ fontSize: smallIconSize }} />}
+          disabled={!user.settings[0].enableCategories}
+        />
+        <NavigationButton
+          onClick={() => n("add")}
+          showLabel={false}
+          icon={
+            <AddIcon
+              fontSize="large"
+              animate={user.tasks.length === 0 && value !== 2 ? true : undefined}
+            />
+          }
+        />
+        <NavigationButton
+          onClick={() => n("import-export")}
+          label="Import/Export"
+          icon={<GetApp sx={{ fontSize: smallIconSize }} />}
+        />
+        <NavigationButton
+          onClick={() => n("user")}
+          label="Profile"
+          icon={<Person sx={{ fontSize: smallIconSize }} />}
+        />
+      </StyledBottomNavigation>
+    </Container>
+  );
+};
+
+const AddIcon = styled(Add)<{ animate?: boolean }>`
+  border: 2px solid ${ColorPalette.purple};
+  background-color: #232e58;
+  font-size: 38px;
+  border-radius: 100px;
+  padding: 6px;
+  margin: 14px;
+  ${({ animate }) =>
+    animate &&
+    css`
+      animation: ${pulseAnimation} 1.2s infinite;
+    `}
+`;
+
+const Container = styled(Box)`
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  margin: 0;
+  animation: ${slideInBottom} 0.5s ease;
+  z-index: 999; /*9999*/
+`;
+
+const StyledBottomNavigation = styled(BottomNavigation)`
+  border-radius: 24px 24px 0 0;
+  background: #232e58e1;
+  backdrop-filter: blur(18px);
+  margin: 0px 20px 0px -20px;
+  padding: 18px 10px 32px 10px;
+`;
+
+const NavigationButton = styled(BottomNavigationAction)`
+  border-radius: 18px;
+  margin: 4px;
+  color: white;
+
+  &:disabled {
+    opacity: 0.6;
+    & .MuiBottomNavigationAction-label {
+      text-shadow: none;
+    }
+  }
+  & .MuiBottomNavigationAction-label {
+    font-size: 13px;
+    text-shadow: 0 0 12px #000000ce;
+  }
+  & .Mui-selected {
+    /* text-shadow: 0 0 5px ${ColorPalette.purple}; */
+  }
+`;
+```
+src/components/CategorySelect.tsx
+```tsx
+import styled from "@emotion/styled";
+import { Category, User } from "../types/user";
+import { Avatar, Box, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { CategoryChip, ColorPalette } from "../styles";
+import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { getFontColorFromHex } from "../utils";
+import { CSSProperties } from "react";
+import { MAX_CATEGORIES } from "../constants";
+import toast from "react-hot-toast";
+
+interface CategorySelectProps {
+  user: User;
+  // variant?: "standard" | "outlined" | "filled";
+  width?: CSSProperties["width"];
+  selectedCategories: Category[];
+  setSelectedCategories: React.Dispatch<React.SetStateAction<Category[]>>;
+}
+/**
+ * Component for selecting categories with emojis.
+ */
+
+export const CategorySelect = ({
+  user,
+  width,
+  selectedCategories,
+  setSelectedCategories,
+}: CategorySelectProps): JSX.Element => {
+  const handleCategoryChange = (event: SelectChangeEvent<unknown>): void => {
+    const selectedCategoryIds = event.target.value as number[];
+
+    if (selectedCategoryIds.length > MAX_CATEGORIES) {
+      toast.error(`You cannot add more than ${MAX_CATEGORIES} categories`, {
+        position: "top-center",
+      });
+      return;
+    }
+
+    const selectedCategories = user.categories.filter((cat) =>
+      selectedCategoryIds.includes(cat.id)
+    );
+    setSelectedCategories(selectedCategories);
+  };
+
+  return (
+    <>
+      <StyledSelect
+        multiple
+        width={width}
+        value={selectedCategories.map((cat) => cat.id)}
+        onChange={handleCategoryChange}
+        sx={{ zIndex: 999 }}
+        renderValue={() => (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+            {selectedCategories.map((cat) => (
+              <CategoryChip
+                key={cat.id}
+                label={<span style={{ fontWeight: "bold" }}>{cat.name}</span>}
+                variant="outlined"
+                backgroundclr={cat.color}
+                glow={false}
+                avatar={
+                  cat.emoji ? (
+                    <Avatar
+                      alt={cat.name}
+                      sx={{
+                        background: "transparent",
+                        borderRadius: "0px",
+                      }}
+                    >
+                      {cat.emoji &&
+                        (user.emojisStyle === EmojiStyle.NATIVE ? (
+                          <div>
+                            <Emoji size={20} unified={cat.emoji} emojiStyle={EmojiStyle.NATIVE} />
+                          </div>
+                        ) : (
+                          <Emoji size={24} unified={cat.emoji} emojiStyle={user.emojisStyle} />
+                        ))}
+                    </Avatar>
+                  ) : (
+                    <></>
+                  )
+                }
+              />
+            ))}
+          </Box>
+        )}
+        MenuProps={{
+          PaperProps: {
+            style: {
+              maxHeight: 400,
+
+              zIndex: 999999,
+              padding: "2px 6px",
+              background: "white",
+            },
+          },
+        }}
+      >
+        <MenuItem
+          disabled
+          sx={{
+            opacity: "1 !important",
+            fontWeight: 500,
+            position: "sticky !important",
+            top: 0,
+            background: "white",
+            zIndex: 99,
+          }}
+        >
+          Select Categories (max {MAX_CATEGORIES})
+        </MenuItem>
+
+        {user.categories && user.categories.length > 0 ? (
+          user.categories.map((category) => (
+            <CategoriesMenu key={category.id} value={category.id} clr={category.color}>
+              {category.emoji && <Emoji unified={category.emoji} emojiStyle={user.emojisStyle} />}
+              &nbsp;
+              {category.name}
+            </CategoriesMenu>
+          ))
+        ) : (
+          <MenuItem disabled sx={{ opacity: "1 !important" }}>
+            You don't have any categories
+          </MenuItem>
+        )}
+      </StyledSelect>
+    </>
+  );
+};
+const StyledSelect = styled(Select)<{ width?: CSSProperties["width"] }>`
+  margin: 12px 0;
+  border-radius: 16px;
+  transition: 0.3s all;
+  width: ${({ width }) => width || "100%"};
+  color: white;
+  /* border: 3px solid ${ColorPalette.purple}; */
+  /* & * {
+    border-color: ${ColorPalette.purple};
+  } */
+`;
+const CategoriesMenu = styled(MenuItem)<{ clr?: string }>`
+  padding: 12px 20px;
+  border-radius: 16px;
+  margin: 8px;
+  display: flex;
+  gap: 4px;
+  font-weight: 500;
+  transition: 0.2s all;
+  color: ${(props) => getFontColorFromHex(props.clr || ColorPalette.fontLight)};
+  background: ${({ clr }) => clr || "#bcbcbc"};
+  border: 4px solid transparent;
+  &:hover {
+    background: ${({ clr }) => clr || "#bcbcbc"};
+    opacity: 0.7;
+  }
+
+  &:focus {
+    opacity: none;
+  }
+  &:focus-visible {
+    border-color: ${ColorPalette.purple} !important;
+    color: ${ColorPalette.fontDark} !important;
+    transform: scale(1.05);
+  }
+
+  &.Mui-selected {
+    background: ${({ clr }) => clr || "#bcbcbc"};
+    color: ${(props) => getFontColorFromHex(props.clr || ColorPalette.fontLight)};
+    /* box-shadow: 0 0 14px 4px ${(props) => props.clr || "#bcbcbc"}; */
+    border: 4px solid #38b71f;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    font-weight: bold;
+    &::after {
+      content: "• selected";
+      font-size: 14px;
+      font-weight: 400;
+    }
+    &:hover {
+      background: ${({ clr }) => clr || "#bcbcbc"};
+      opacity: 0.7;
+    }
+  }
+`;
+```
+src/components/ColorPicker.tsx
+```tsx
+import { CSSProperties, useEffect, useState } from "react";
+import { ColorPalette } from "../styles";
+import styled from "@emotion/styled";
+import { Casino, Colorize, Done } from "@mui/icons-material";
+import { getFontColorFromHex } from "../utils";
+import { Grid, Tooltip } from "@mui/material";
+
+interface ColorPickerProps {
+  color: string;
+  onColorChange: (newColor: string) => void;
+  width?: CSSProperties["width"];
+}
+
+// TODO: redesign color picker component
+
+/**
+ * Custom Color Picker component for selecting colors.
+ */
+export const ColorPicker: React.FC<ColorPickerProps> = ({ color, onColorChange, width }) => {
+  const [selectedColor, setSelectedColor] = useState<string>(color);
+
+  const isHexColor = (value: string): boolean => /^#[0-9A-Fa-f]{6}$/.test(value);
+
+  // Predefined color options
+  const colors: string[] = [
+    ColorPalette.purple,
+    "#FF69B4",
+    "#FB34FF",
+    "#FF22B4",
+    "#c6a7ff",
+    "#7ACCFA",
+    "#4A9DFF",
+    "#5061FF",
+    "#50B5CB",
+    "#3DFF7F",
+    "#3AE836",
+    "#B7FF42",
+    "#FFEA28",
+    "#F9BE26",
+    "#FF9518",
+    "#ffc3a0",
+    "#FF5018",
+    "#FF2F2F",
+  ];
+
+  useEffect(() => {
+    // Update the selected color when the color prop changes
+    setSelectedColor(color);
+  }, [color]);
+
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+    onColorChange(color);
+  };
+
+  const handlePickerChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    handleColorChange(e.target.value as string);
+
+  // Handle selecting a random color
+  const handleRandomColor = () => {
+    let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    randomColor = "#" + ("000000" + randomColor).slice(-6);
+    handleColorChange(randomColor);
+  };
+
+  // Check if the current color is a valid hex color and update it if not
+  useEffect(() => {
+    if (!isHexColor(color)) {
+      console.log(`Invalid hex color: ${color}`);
+      handleColorChange(ColorPalette.purple);
+    }
+  }, [color]);
+
+  return (
+    <div>
+      <Grid
+        maxWidth={width || 400}
+        sx={{
+          marginTop: "16px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background: selectedColor,
+          color: getFontColorFromHex(selectedColor),
+          padding: "8px",
+          borderRadius: "100px",
+          transition: ".3s all",
+          border: "2px solid #ffffffab",
+        }}
+      >
+        {selectedColor.toUpperCase()}
+      </Grid>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          maxWidth: width || 400,
+        }}
+      >
+        <Grid container spacing={1} maxWidth={width || 400} m={1}>
+          {colors.map((color) => (
+            <Grid item key={color}>
+              <ColorElement
+                clr={color}
+                aria-label={`Select color - ${color}`}
+                onClick={() => {
+                  handleColorChange(color);
+                }}
+              >
+                {color === selectedColor && <Done />}
+              </ColorElement>
+            </Grid>
+          ))}
+          <Tooltip title="Set custom color">
+            <Grid item>
+              <ColorPickerContainer>
+                <ColorElement clr={selectedColor}>
+                  <StyledColorPicker
+                    type="color"
+                    value={selectedColor}
+                    onChange={handlePickerChange}
+                  />
+                  <ColorizeIcon clr={selectedColor} />
+                </ColorElement>
+              </ColorPickerContainer>
+            </Grid>
+          </Tooltip>
+          <Tooltip title="Random color">
+            <Grid item>
+              <ColorElement clr="#1a81ff" onClick={handleRandomColor}>
+                <Casino />
+              </ColorElement>
+            </Grid>
+          </Tooltip>
+        </Grid>
+      </div>
+    </div>
+  );
+};
+// Styled button for color selection
+const ColorElement = styled.button<{ clr: string }>`
+  background-color: ${({ clr }) => clr};
+  color: ${({ clr }) => getFontColorFromHex(clr)};
+  border: none;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 999px;
+  transition: 0.2s all;
+  transform: scale(1);
+
+  &:focus-visible {
+    outline: 4px solid ${ColorPalette.purple};
+  }
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px ${({ clr }) => clr};
+    /* outline: none; */
+  }
+`;
+
+const ColorPickerContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledColorPicker = styled.input`
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  height: 54px;
+  width: 54px;
+  display: flex;
+
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  &::-webkit-color-swatch {
+    border-radius: 18px;
+    border: none;
+  }
+  &::-moz-color-swatch {
+    border-radius: 18px;
+    border: none;
+  }
+`;
+
+const ColorizeIcon = styled(Colorize)<{ clr: string }>`
+  color: ${({ clr }) => getFontColorFromHex(clr)};
+  position: absolute;
+  cursor: pointer;
+  pointer-events: none;
+`;
+```
+src/components/CustomEmojiPicker.tsx
+```tsx
+import { useState, useEffect, Dispatch, SetStateAction, CSSProperties } from "react";
+import styled from "@emotion/styled";
+import { Avatar, Badge, Button, Tooltip } from "@mui/material";
+import { AddReaction, Edit, RemoveCircleOutline } from "@mui/icons-material";
+import EmojiPicker, { Emoji, EmojiClickData, EmojiStyle, SuggestionMode } from "emoji-picker-react";
+import { getFontColorFromHex } from "../utils";
+import { ColorPalette } from "../styles";
+import { User } from "../types/user";
+
+interface EmojiPickerProps {
+  emoji?: string;
+  setEmoji: Dispatch<SetStateAction<string | undefined>>;
+  // onEmojiChange: (emojiData: EmojiClickData) => void;
+  user: User;
+  color?: string;
+  width?: CSSProperties["width"];
+}
+
+export const CustomEmojiPicker = ({ emoji, setEmoji, user, color, width }: EmojiPickerProps) => {
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+
+  const [currentEmoji, setCurrentEmoji] = useState<string | undefined>(emoji || undefined);
+
+  // const [emojiData, setEmojiData] = useState<EmojiClickData>();
+
+  // When the currentEmoji state changes, update the parent component's emoji state
+  useEffect(() => {
+    setEmoji(currentEmoji);
+  }, [currentEmoji]);
+
+  // When the emoji prop changes to an empty string, set the currentEmoji state to undefined
+  useEffect(() => {
+    if (emoji === "") {
+      setCurrentEmoji(undefined);
+    }
+  }, [emoji]);
+
+  // Function to toggle the visibility of the EmojiPicker
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker((prevState) => !prevState);
+  };
+
+  // Handler function for when an emoji is clicked in the EmojiPicker
+  const handleEmojiClick = (e: EmojiClickData) => {
+    toggleEmojiPicker();
+    setCurrentEmoji(e.unified);
+    // setEmojiData(e);
+    console.log(e);
+    // console.log(e.getImageUrl(user.emojisStyle));
+  };
+
+  const handleRemoveEmoji = () => {
+    toggleEmojiPicker();
+    setCurrentEmoji(undefined);
+  };
+
+  // Function to render the content of the Avatar based on whether an emoji is selected or not
+  const renderAvatarContent = () => {
+    if (currentEmoji) {
+      // Determine the size of the emoji based on the user's emoji style preference
+      const emojiSize = user.emojisStyle === EmojiStyle.NATIVE ? 48 : 64;
+      return (
+        <div>
+          <Emoji size={emojiSize} emojiStyle={user.emojisStyle} unified={currentEmoji} />
+        </div>
+      );
+    } else {
+      // If no emoji is selected, show the AddReaction icon with the specified color or default purple
+      const fontColor = color ? getFontColorFromHex(color) : ColorPalette.fontLight;
+      return (
+        <AddReaction
+          sx={{
+            fontSize: "52px",
+            color: fontColor,
+            transition: ".3s all",
+          }}
+        />
+      );
+    }
+  };
+
+  return (
+    <>
+      <EmojiContainer>
+        <Tooltip
+          title={
+            showEmojiPicker
+              ? "Close Emoji Picker"
+              : currentEmoji
+              ? "Change Emoji"
+              : "Choose an Emoji"
+          }
+        >
+          <Badge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            badgeContent={
+              <Avatar
+                sx={{
+                  background: "#9c9c9c81",
+                  backdropFilter: "blur(6px)",
+                  cursor: "pointer",
+                }}
+                onClick={toggleEmojiPicker}
+              >
+                <Edit />
+              </Avatar>
+            }
+          >
+            <Avatar
+              onClick={toggleEmojiPicker}
+              sx={{
+                width: "96px",
+                height: "96px",
+                background: color || ColorPalette.purple,
+                transition: ".3s all",
+                cursor: "pointer",
+              }}
+            >
+              {renderAvatarContent()}
+            </Avatar>
+          </Badge>
+        </Tooltip>
+      </EmojiContainer>
+      {/* {emojiData && <EmojiName>{emojiData.names[0]}</EmojiName>} */}
+      {showEmojiPicker && (
+        <>
+          <EmojiPickerContainer>
+            <EmojiPicker
+              width={width || "350px"}
+              height="500px"
+              emojiStyle={user.emojisStyle}
+              suggestedEmojisMode={SuggestionMode.RECENT}
+              autoFocusSearch={false}
+              lazyLoadEmojis
+              onEmojiClick={handleEmojiClick}
+              searchPlaceHolder="Search emoji"
+              previewConfig={{
+                defaultEmoji: "1f4dd",
+                defaultCaption: "Choose the perfect emoji for your task",
+              }}
+            />
+          </EmojiPickerContainer>
+          {currentEmoji && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "14px",
+              }}
+            >
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleRemoveEmoji}
+                sx={{ p: "8px 20px", borderRadius: "14px" }}
+              >
+                <RemoveCircleOutline /> &nbsp; Remove Emoji
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+    </>
+  );
+};
+
+const EmojiContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 14px;
+`;
+
+// const EmojiName = styled.h5`
+//   text-align: center;
+//   margin: 0;
+//   opacity: 0.8;
+//   text-transform: capitalize;
+// `;
+
+const EmojiPickerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 24px;
+`;
+```
+src/components/EditTask.tsx
+```tsx
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Category, Task, User } from "../types/user";
+import styled from "@emotion/styled";
+import { DESCRIPTION_MAX_LENGTH, TASK_NAME_MAX_LENGTH } from "../constants";
+import { DialogBtn } from "../styles";
+import { CategorySelect, ColorPicker, CustomEmojiPicker } from ".";
+import toast from "react-hot-toast";
+
+interface EditTaskProps {
+  open: boolean;
+  task?: Task;
+  onClose: () => void;
+  onSave: (editedTask: Task) => void;
+  user: User;
+}
+
+export const EditTask = ({ open, task, onClose, onSave, user }: EditTaskProps) => {
+  const [editedTask, setEditedTask] = useState<Task | undefined>(task);
+  const [nameError, setNameError] = useState<boolean>(false);
+  const [descriptionError, setDescriptionError] = useState<boolean>(false);
+  const [emoji, setEmoji] = useState<string | undefined>();
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+  // Effect hook to update the editedTask with the selected emoji.
+  useEffect(() => {
+    setEditedTask((prevTask) => ({
+      ...(prevTask as Task),
+      emoji: emoji,
+    }));
+  }, [emoji]);
+
+  // useEffect(() => {
+  //   setSelectedCategories(
+  //     editedTask?.category !== undefined
+  //       ? (editedTask.category as Category[])
+  //       : []
+  //   );
+  // }, []);
+
+  // Effect hook to update the editedTask when the task prop changes.
+  useEffect(() => {
+    setEditedTask(task);
+    setSelectedCategories(task?.category as Category[]);
+  }, [task]);
+
+  // Event handler for input changes in the form fields.
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    // Update name error state if the name length exceeds the maximum allowed.
+
+    if (name === "name" && value.length > TASK_NAME_MAX_LENGTH) {
+      setNameError(true);
+    } else {
+      setNameError(false);
+    }
+    // Update description error state if the description length exceeds the maximum allowed.
+    if (name === "description" && value.length > DESCRIPTION_MAX_LENGTH) {
+      setDescriptionError(true);
+    } else {
+      setDescriptionError(false);
+    }
+    // Update the editedTask state with the changed value.
+    setEditedTask((prevTask) => ({
+      ...(prevTask as Task),
+      [name]: value,
+    }));
+  };
+  // Event handler for saving the edited task.
+  const handleSave = () => {
+    document.body.style.overflow = "auto";
+    if (editedTask && !nameError && !descriptionError) {
+      onSave(editedTask);
+      toast.success(
+        <div>
+          Task <b>{editedTask.name}</b> updated.
+        </div>
+      );
+    }
+  };
+
+  const handleCancel = () => {
+    onClose();
+    setEditedTask(task);
+    setSelectedCategories(task?.category as Category[]);
+    // toast("Canceled editing task.");
+  };
+
+  // Event handler for category change in the Select dropdown.
+  // const handleCategoryChange = (event: SelectChangeEvent<unknown>) => {
+  //   const categoryId = event.target.value as number;
+  //   const selectedCategory = user.categories.find(
+  //     (category) => category.id === categoryId
+  //   );
+
+  //   setEditedTask((prevTask) => ({
+  //     ...(prevTask as Task),
+  //     category: selectedCategory ? [selectedCategory] : undefined,
+  //   }));
+  // };
+
+  useEffect(() => {
+    setEditedTask((prevTask) => ({
+      ...(prevTask as Task),
+      category: (selectedCategories as Category[]) || undefined,
+    }));
+  }, [selectedCategories]);
+
+  return (
+    <Dialog
+      open={open}
+      onClose={() => {
+        onClose();
+        setEditedTask(task);
+        setSelectedCategories(task?.category as Category[]);
+      }}
+      PaperProps={{
+        style: {
+          borderRadius: "24px",
+          padding: "12px",
+          maxWidth: "600px",
+        },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          justifyContent: "space-between",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <span>Edit Task</span>
+        {editedTask?.lastSave && (
+          <LastEdit>
+            Last Edited: {new Date(editedTask?.lastSave).toLocaleDateString()}
+            {" • "}
+            {new Date(editedTask?.lastSave).toLocaleTimeString()}
+          </LastEdit>
+        )}
+      </DialogTitle>
+      <DialogContent>
+        <CustomEmojiPicker
+          user={user}
+          emoji={editedTask?.emoji || undefined}
+          setEmoji={setEmoji}
+          color={editedTask?.color}
+          width="400px"
+        />
+        <StyledInput
+          label="Name"
+          name="name"
+          value={editedTask?.name || ""}
+          onChange={handleInputChange}
+          fullWidth
+          error={nameError || editedTask?.name === ""}
+          helperText={
+            editedTask?.name === ""
+              ? "Name is required"
+              : nameError
+              ? `Name should be less than or equal to ${TASK_NAME_MAX_LENGTH} characters`
+              : undefined
+          }
+        />
+        <StyledInput
+          label="Description"
+          name="description"
+          value={editedTask?.description || ""}
+          onChange={handleInputChange}
+          fullWidth
+          multiline
+          rows={4}
+          margin="normal"
+          error={descriptionError}
+          helperText={
+            descriptionError &&
+            `Description is too long (maximum ${DESCRIPTION_MAX_LENGTH} characters)`
+          }
+        />
+
+        {/* FIXME: default date doesnt work (new amazing chrome update) */}
+        <StyledInput
+          label="Deadline date"
+          name="deadline"
+          type="datetime-local"
+          value={editedTask?.deadline}
+          onChange={handleInputChange}
+          focused
+          fullWidth
+        />
+
+        {user.settings[0].enableCategories !== undefined && user.settings[0].enableCategories && (
+          <>
+            <Label>Category</Label>
+            <CategorySelect
+              user={user}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+            />
+
+            {/* {editedTask?.category &&
+                editedTask.category.length > 0 &&
+                !user.categories.some(
+                  (category) =>
+                    editedTask.category &&
+                    editedTask.category[0] &&
+                    category.id === editedTask.category[0].id
+                ) && (
+                  <div style={{ margin: "8px 0" }}>
+                    <span>
+                      Category <b>{editedTask.category[0]?.name}</b> has been
+                      deleted
+                      <br />
+                      <Button
+                        sx={{
+                          padding: "8px 12px",
+                          margin: "8px 0",
+                          borderRadius: "12px",
+                        }}
+                        onClick={() => {
+                          if (editedTask.category && editedTask.category[0]) {
+                            const updatedCategories = [
+                              ...user.categories,
+                              editedTask.category[0],
+                            ];
+
+                            setUser((prevUser) => ({
+                              ...prevUser,
+                              categories: updatedCategories,
+                            }));
+                          }
+                        }}
+                      >
+                        <Restore /> &nbsp; restore category
+                      </Button>
+                    </span>
+                  </div>
+                )} */}
+          </>
+        )}
+        <Label>Color</Label>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <ColorPicker
+            width={"100%"}
+            color={editedTask?.color || "#000000"}
+            onColorChange={(color) => {
+              setEditedTask((prevTask) => ({
+                ...(prevTask as Task),
+                color: color,
+              }));
+            }}
+          />
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <DialogBtn onClick={handleCancel}>Cancel</DialogBtn>
+        <DialogBtn
+          onClick={handleSave}
+          color="primary"
+          disabled={nameError || editedTask?.name === ""}
+        >
+          Save
+        </DialogBtn>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+const StyledInput = styled(TextField)`
+  margin: 14px 0;
+  & .MuiInputBase-root {
+    border-radius: 16px;
+  }
+`;
+
+const Label = styled(Typography)`
+  margin-left: 8px;
+  font-weight: 500;
+  font-size: 16px;
+`;
+
+// const StyledSelect = styled(Select)`
+//   border-radius: 16px;
+//   transition: 0.3s all;
+
+//   margin: 8px 0;
+// `;
+
+const LastEdit = styled.span`
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 400;
+  opacity: 0.8;
+`;
+```
+src/components/ErrorBoundary.tsx
+```tsx
+import React, { ErrorInfo } from "react";
+import { User } from "../types/user";
+import { StyledLink } from "../styles";
+import { Emoji } from "emoji-picker-react";
+import { Button } from "@mui/material";
+import { exportTasksToJson } from "../utils";
+import { Delete, FileDownload } from "@mui/icons-material";
+import toast from "react-hot-toast";
+
+interface ErrorBoundaryProps {
+  user: User;
+  children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+/**
+ * ErrorBoundary component that catches and displays errors within its children.
+ */
+
+export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = {
+      hasError: false,
+    };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return {
+      hasError: true,
+      error: error,
+    };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error("Error:", error);
+    console.error("Error Info:", errorInfo);
+  }
+  // formatJSON = (data: any, indent: number = 2): string => {
+  //   return JSON.stringify(data, null, indent);
+  // };
+
+  // syntaxHighlightJSON = (json: string): React.ReactNode => {
+  //   const parts = json.split(/"([^"]+)":/g);
+  //   const formattedJSON: React.ReactNode[] = [];
+
+  //   for (let i = 0; i < parts.length; i++) {
+  //     const part = parts[i];
+  //     if (i % 2 === 0) {
+  //       formattedJSON.push(
+  //         <span key={i} style={{ color: "#ff42ac" }}>
+  //           {part}
+  //         </span>
+  //       );
+  //     } else {
+  //       formattedJSON.push(
+  //         <span key={i} style={{ color: "#59f7ffe5" }}>
+  //           {`"${part}"`}
+  //         </span>
+  //       );
+  //     }
+  //   }
+
+  //   return formattedJSON;
+  // };
+
+  render() {
+    if (this.state.hasError) {
+      // const jsonString = this.formatJSON(this.props.user, 2);
+      // const formattedJSON = this.syntaxHighlightJSON(jsonString);
+      return (
+        <div>
+          <h1
+            style={{
+              color: "#ff3131",
+              display: "flex",
+              justifyContent: "left",
+              alignItems: "center",
+            }}
+          >
+            Oops! An error occurred&nbsp;
+            <Emoji size={38} unified="1f644" />.
+          </h1>{" "}
+          <h2>
+            To fix it, try clearing your local files (cookies and cache) and then refresh the page.
+            If the problem persists, please report the issue via{" "}
+            <StyledLink href="https://github.com/maciekt07/TodoApp/issues">
+              Github Issues
+            </StyledLink>
+            .
+          </h2>
+          <div
+            style={{
+              margin: "16px 0",
+            }}
+          >
+            <Button
+              size="large"
+              variant="outlined"
+              sx={{ p: "12px 20px", borderRadius: "14px" }}
+              onClick={() => {
+                localStorage.clear();
+                location.reload();
+              }}
+            >
+              <Delete /> &nbsp; Auto Clear
+            </Button>
+          </div>
+          <h3>
+            <span style={{ color: "#ff3131" }}>ERROR:</span> [{this.state.error?.name}]{" "}
+            {this.state.error?.message}
+          </h3>
+          <details
+            style={{
+              border: "2px solid #ffffff2e",
+              padding: "8px",
+              borderRadius: "8px",
+              background: "#ffffff15",
+            }}
+          >
+            <summary>Error stack</summary>
+            <div style={{ opacity: 0.8, fontSize: "12px" }}>
+              {this.state.error?.stack?.replace(this.state.error?.message, "")}
+            </div>
+          </details>
+          <pre>
+            <Button
+              variant="outlined"
+              sx={{ m: "14px 6px", p: "12px 20px", borderRadius: "14px" }}
+              onClick={() => {
+                exportTasksToJson(this.props.user.tasks);
+                toast.success(`Exported all tasks (${this.props.user.tasks.length})`);
+              }}
+            >
+              <FileDownload /> &nbsp; Export Tasks To JSON
+            </Button>
+            <br />
+            <code>{JSON.stringify(this.props.user, null, 4)}</code>
+            {/* <code>
+              {Object.entries(this.props.user).map(([key, value], index) => (
+                <div key={index}>
+                  <span style={{ color: "#ff42ac" }}>{key}:</span>
+                  <span style={{ color: "#59f7ffe5" }}>{JSON.stringify(value, null, 4)}</span>
+                </div>
+              ))}
+            </code> */}
+
+            {/* <code>{formattedJSON}</code> */}
+          </pre>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+```
+src/components/ProfileAvatar.tsx
+```tsx
+import { useState } from "react";
+import {
+  Avatar,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  MenuItem,
+  SwipeableDrawer,
+  Tooltip,
+} from "@mui/material";
+import { UserProps } from "../types/user";
+import styled from "@emotion/styled";
+import {
+  Add,
+  Category,
+  GetApp,
+  GitHub,
+  Logout,
+  Person,
+  Settings,
+  TaskAlt,
+} from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { defaultUser } from "../constants/defaultUser";
+import { SettingsDialog } from ".";
+import toast from "react-hot-toast";
+import logo from "../assets/logo256.png";
+import { ColorPalette } from "../styles";
+
+export const ProfileAvatar = ({ user, setUser }: UserProps) => {
+  const n = useNavigate();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const [logoutConfirmationOpen, setLogoutConfirmationOpen] = useState<boolean>(false);
+
+  const [openSettings, setOpenSettings] = useState<boolean>(false);
+
+  const iOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleLogoutConfirmationOpen = () => {
+    setLogoutConfirmationOpen(true);
+    setAnchorEl(null);
+  };
+
+  const handleLogoutConfirmationClose = () => {
+    setLogoutConfirmationOpen(false);
+  };
+
+  const handleLogout = () => {
+    setUser(defaultUser);
+    handleLogoutConfirmationClose();
+    toast.success("You have been successfully logged out");
+  };
+
+  return (
+    <Container>
+      <Tooltip title={user.name || "User"}>
+        <IconButton
+          id="basic-button"
+          aria-controls={open ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleClick}
+        >
+          <Avatar
+            src={(user.profilePicture as string) || undefined}
+            onError={() => {
+              setUser((prevUser) => ({
+                ...prevUser,
+                profilePicture: null,
+              }));
+
+              toast.error("Error in profile picture URL");
+              throw new Error("Error in profile picture URL");
+            }}
+            sx={{
+              width: "52px",
+              height: "52px",
+              background: "#747474",
+              transition: ".2s all",
+              // WebkitTransform: "translate3d(0,0,0)",
+            }}
+          />
+        </IconButton>
+      </Tooltip>
+      <SwipeableDrawer
+        disableBackdropTransition={!iOS}
+        disableDiscovery={iOS}
+        id="basic-menu"
+        // anchorEl={anchorEl}
+        anchor="right"
+        open={open}
+        onOpen={() => console.log("")}
+        onClose={handleClose}
+        // MenuListProps={{
+        //   "aria-labelledby": "basic-button",
+        // }}
+        sx={{
+          "& .MuiPaper-root": {
+            borderRadius: "24px 0 0 0",
+            minWidth: "260px",
+            boxShadow: "none",
+            padding: "4px",
+            background: "#F9FAFC",
+          },
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row",
+            marginTop: "8px",
+            gap: "16px",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            n("/");
+            handleClose();
+          }}
+        >
+          <img src={logo} alt="logo" style={{ width: "48px", marginLeft: "18px" }} />
+          <h2>
+            <span style={{ color: "#7764E8" }}>Todo</span> App
+            <span style={{ color: "#7764E8" }}>.</span>
+          </h2>
+        </div>
+
+        <StyledMenuItem
+          onClick={() => {
+            n("/");
+            handleClose();
+          }}
+          sx={{ mt: "16px !important" }}
+        >
+          <TaskAlt /> &nbsp; Tasks
+          {user.tasks.filter((task) => !task.done).length > 0 && (
+            <MenuLabel clr={ColorPalette.purple}>
+              {user.tasks.filter((task) => !task.done).length}
+            </MenuLabel>
+          )}
+        </StyledMenuItem>
+        <StyledMenuItem
+          onClick={() => {
+            n("/add");
+            handleClose();
+          }}
+        >
+          <Add /> &nbsp; Add Task
+        </StyledMenuItem>
+        <StyledMenuItem
+          onClick={() => {
+            n("/user");
+            handleClose();
+          }}
+        >
+          <Person /> &nbsp; Profile
+        </StyledMenuItem>
+
+        {user.settings[0].enableCategories !== undefined && user.settings[0].enableCategories && (
+          <StyledMenuItem
+            onClick={() => {
+              n("/categories");
+              handleClose();
+            }}
+          >
+            <Category /> &nbsp; Categories
+          </StyledMenuItem>
+        )}
+        <StyledMenuItem
+          onClick={() => {
+            n("/import-export");
+            handleClose();
+          }}
+        >
+          <GetApp /> &nbsp; Import/Export
+        </StyledMenuItem>
+
+        <Divider sx={{ margin: "0 8px" }} />
+        <StyledMenuItem
+          onClick={() => {
+            window.open("https://github.com/maciekt07/TodoApp");
+          }}
+        >
+          <GitHub /> &nbsp; Github
+        </StyledMenuItem>
+
+        <StyledMenuItem onClick={handleLogoutConfirmationOpen} sx={{ color: "#ff4040 !important" }}>
+          <Logout /> &nbsp; Logout
+        </StyledMenuItem>
+        <div
+          style={{
+            marginTop: "auto",
+            // marginLeft: "18px",
+            marginBottom: iOS ? "38px" : "18px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
+          <StyledMenuItem
+            sx={{
+              background: "#101727",
+              color: "white !important",
+              "&:hover": {
+                background: "#101727db !important",
+              },
+            }}
+            onClick={() => {
+              setOpenSettings(true);
+              handleClose();
+            }}
+          >
+            <Settings /> &nbsp; Settings
+          </StyledMenuItem>
+          <Divider sx={{ margin: "0 8px" }} />
+          <StyledMenuItem
+            onClick={() => {
+              n("/user");
+              handleClose();
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "#d7d7d7",
+            }}
+          >
+            <Avatar src={(user.profilePicture as string) || undefined} />
+            <h4 style={{ margin: 0, fontWeight: 600 }}> {user.name || "User"}</h4>
+          </StyledMenuItem>
+          <span
+            style={{
+              fontSize: "12px",
+              margin: "2px 8px",
+              color: "#101727",
+              opacity: 0.8,
+              textAlign: "center",
+            }}
+          >
+            Made with ❤ by{" "}
+            <a
+              style={{ textDecoration: "none", color: "inherit" }}
+              href="https://github.com/maciekt07"
+            >
+              maciekt07
+            </a>
+          </span>
+        </div>
+      </SwipeableDrawer>
+
+      <Dialog
+        open={logoutConfirmationOpen}
+        onClose={handleLogoutConfirmationClose}
+        PaperProps={{
+          style: {
+            borderRadius: "24px",
+            padding: "10px",
+          },
+        }}
+      >
+        <DialogTitle>Logout Confirmation</DialogTitle>
+        <DialogContent>
+          Are you sure you want to logout? <b>Your tasks will not be saved.</b>
+        </DialogContent>
+        <DialogActions>
+          <DialogBtn onClick={handleLogoutConfirmationClose}>Cancel</DialogBtn>
+          <DialogBtn onClick={handleLogout} color="error">
+            Logout
+          </DialogBtn>
+        </DialogActions>
+      </Dialog>
+      <SettingsDialog
+        open={openSettings}
+        onClose={() => setOpenSettings(!openSettings)}
+        user={user}
+        setUser={setUser}
+      />
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  position: absolute;
+  right: 16vw;
+  top: 14px;
+  z-index: 900;
+  @media (max-width: 1024px) {
+    right: 16px;
+  }
+`;
+const StyledMenuItem = styled(MenuItem)`
+  margin: 0px 8px;
+  padding: 16px 12px;
+  border-radius: 14px;
+  box-shadow: none;
+  display: flex;
+  font-weight: 500;
+  color: #101727;
+
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+const DialogBtn = styled(Button)`
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 16px;
+  margin: 8px;
+`;
+
+const MenuLabel = styled.span<{ clr: string }>`
+  margin-left: auto;
+  font-weight: 500;
+  background: ${({ clr }) => clr + "45"};
+  color: ${({ clr }) => clr};
+  padding: 1px 12px;
+  border-radius: 32px;
+  font-size: 14px;
+`;
+```
+src/components/Settings.tsx
+```tsx
+import React, { useState } from "react";
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  IconButton,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Slider,
+  Stack,
+  Switch,
+  Tooltip,
+} from "@mui/material";
+import { AppSettings, UserProps } from "../types/user";
+import { DialogBtn } from "../styles";
+import styled from "@emotion/styled";
+import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { useOnlineStatus } from "../hooks/useOnlineStatus";
+import { VolumeDown, VolumeOff, VolumeUp, WifiOff } from "@mui/icons-material";
+import { defaultUser } from "../constants/defaultUser";
+
+interface SettingsProps extends UserProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export const SettingsDialog = ({ open, onClose, user, setUser }: SettingsProps) => {
+  const [settings, setSettings] = useState<AppSettings>(user.settings[0]);
+  const [lastStyle] = useState<EmojiStyle>(user.emojisStyle);
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [prevVoiceVol, setPrevVoiceVol] = useState<number>(user.settings[0].voiceVolume);
+
+  const isOnline = useOnlineStatus();
+
+  // Array of available emoji styles with their labels
+  const emojiStyles: { label: string; style: EmojiStyle }[] = [
+    { label: "Apple", style: EmojiStyle.APPLE },
+    { label: "Facebook, Messenger", style: EmojiStyle.FACEBOOK },
+    { label: "Twitter, Discord", style: EmojiStyle.TWITTER },
+    { label: "Google", style: EmojiStyle.GOOGLE },
+    { label: "Native", style: EmojiStyle.NATIVE },
+  ];
+
+  const getAvailableVoices = () => {
+    const voices = window.speechSynthesis.getVoices();
+    const voiceInfoArray = [];
+
+    for (const voice of voices) {
+      if (voice.default) {
+        console.log(voice);
+      }
+      voiceInfoArray.push(voice);
+    }
+
+    return voiceInfoArray;
+  };
+
+  // Ensure the voices are loaded before calling getAvailableVoices
+  window.speechSynthesis.onvoiceschanged = () => {
+    const availableVoices = getAvailableVoices();
+    setAvailableVoices(availableVoices);
+    console.log(availableVoices);
+  };
+
+  // Handler for updating individual setting options
+  const handleSettingChange =
+    (name: keyof AppSettings) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      // cancel read aloud
+      name === "enableReadAloud" && window.speechSynthesis.cancel();
+      const updatedSettings = {
+        ...settings,
+        [name]: event.target.checked,
+      };
+      setSettings(updatedSettings);
+      setUser((prevUser) => ({
+        ...prevUser,
+        settings: [updatedSettings],
+      }));
+    };
+
+  // Handler for updating the selected emoji style
+  const handleEmojiStyleChange = (event: SelectChangeEvent<unknown>) => {
+    const selectedEmojiStyle = event.target.value as EmojiStyle;
+    setUser((prevUser) => ({
+      ...prevUser,
+      emojisStyle: selectedEmojiStyle,
+    }));
+  };
+  const handleVoiceChange = (event: SelectChangeEvent<unknown>) => {
+    // Handle the selected voice
+    const selectedVoice = availableVoices.find((voice) => voice.name === event.target.value);
+
+    // Handle your logic with the selected voice (e.g., updating user settings)
+    if (selectedVoice) {
+      console.log("Selected Voice:", selectedVoice);
+
+      // Update the user settings with the selected voice
+      setUser((prevUser) => ({
+        ...prevUser,
+        settings: [
+          {
+            ...prevUser.settings[0],
+            voice: selectedVoice.name,
+          },
+        ],
+      }));
+    }
+  };
+  // Function to handle changes in voice volume
+  const handleVoiceVolChange = (e: Event, value: number | number[]) => {
+    e.preventDefault();
+    // Update user settings with the new voice volume
+    setUser((prevUser) => ({
+      ...prevUser,
+      settings: [
+        {
+          ...prevUser.settings[0],
+          voiceVolume: value as number,
+        },
+      ],
+    }));
+  };
+
+  // Function to handle mute/unmute button click
+  const handleMuteClick = () => {
+    // Retrieve the current voice volume from user settings
+    const vol = user.settings[0].voiceVolume;
+
+    // Save the previous voice volume before muting
+    setPrevVoiceVol(vol);
+
+    const newVoiceVolume = vol === 0 ? (prevVoiceVol !== 0 ? prevVoiceVol : 1) : 0;
+
+    setUser((prevUser) => ({
+      ...prevUser,
+      settings: [
+        {
+          ...prevUser.settings[0],
+          voiceVolume: newVoiceVolume,
+        },
+      ],
+    }));
+  };
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        style: {
+          borderRadius: "24px",
+          padding: "12px",
+        },
+      }}
+    >
+      <DialogTitle sx={{ fontWeight: 600 }}>Settings</DialogTitle>
+      <Container>
+        {/* Select component to choose the emoji style */}
+        <FormGroup>
+          <FormControl>
+            <FormLabel>Emoji Settings</FormLabel>
+            <StyledSelect value={user.emojisStyle} onChange={handleEmojiStyleChange}>
+              {/* Show a disabled menu item when offline, indicating that the style can't be changed */}
+              {!isOnline && (
+                <MenuItem
+                  disabled
+                  style={{
+                    opacity: 0.8,
+                    display: "flex",
+                    gap: "6px",
+                    fontWeight: 500,
+                  }}
+                >
+                  <WifiOff /> You can't change the emoji style <br /> when you are offline
+                </MenuItem>
+              )}
+
+              {emojiStyles.map((style) => (
+                <MenuItem
+                  key={style.style}
+                  value={style.style}
+                  // Disable non-native styles when offline or if they are not the default style or last selected style
+                  // This prevents users from selecting styles that require fetching external resources (emojis) when offline,
+                  // as those emojis may not load without an internet connection.
+                  disabled={
+                    !isOnline &&
+                    style.style !== EmojiStyle.NATIVE &&
+                    style.style !== defaultUser.emojisStyle &&
+                    style.style !== lastStyle
+                  }
+                  sx={{
+                    padding: "12px 20px",
+                    borderRadius: "12px",
+                    margin: "8px",
+                    display: "flex",
+                    gap: "4px",
+                  }}
+                >
+                  <Emoji size={24} unified="1f60e" emojiStyle={style.style} />
+                  &nbsp;
+                  {/* Space For Native Emoji */}
+                  {style.style === EmojiStyle.NATIVE && "\u00A0"}
+                  {style.label}
+                </MenuItem>
+              ))}
+            </StyledSelect>
+          </FormControl>
+        </FormGroup>
+
+        {/* Switch components to control different app settings */}
+        <FormGroup>
+          <FormLabel>App Settings</FormLabel>
+          <FormControlLabel
+            sx={{ opacity: settings.enableCategories ? 1 : 0.8 }}
+            control={
+              <Switch
+                checked={settings.enableCategories}
+                onChange={handleSettingChange("enableCategories")}
+              />
+            }
+            label="Enable Categories"
+          />
+        </FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            sx={{ opacity: settings.enableGlow ? 1 : 0.8 }}
+            control={
+              <Switch checked={settings.enableGlow} onChange={handleSettingChange("enableGlow")} />
+            }
+            label="Enable Glow Effect"
+          />
+        </FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            sx={{ opacity: settings.enableReadAloud ? 1 : 0.8 }}
+            control={
+              <Switch
+                checked={settings.enableReadAloud}
+                onChange={handleSettingChange("enableReadAloud")}
+              />
+            }
+            label="Enable Read Aloud"
+          />
+        </FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            sx={{ opacity: settings.doneToBottom ? 1 : 0.8 }}
+            control={
+              <Switch
+                checked={settings.doneToBottom}
+                onChange={handleSettingChange("doneToBottom")}
+              />
+            }
+            label="Move Done Tasks To Bottom"
+          />
+        </FormGroup>
+
+        {user.settings[0].enableReadAloud && (
+          <FormGroup>
+            <FormControl>
+              <FormLabel>Voice Settings</FormLabel>
+
+              {availableVoices.length !== 0 ? (
+                <StyledSelect
+                  // Set the value to the first voice in the availableVoices array
+                  value={user.settings[0].voice}
+                  // Handle the voice selection change
+                  onChange={handleVoiceChange}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 500,
+                        padding: "2px 6px",
+                      },
+                    },
+                  }}
+                >
+                  {/* Map over available voices to create MenuItem components */}
+                  {availableVoices.map((voice) => (
+                    <MenuItem
+                      key={voice.name}
+                      value={voice.name}
+                      sx={{
+                        padding: "10px",
+                        borderRadius: "6px",
+                      }}
+                    >
+                      {voice.name} &nbsp;
+                      {voice.default && <span style={{ fontWeight: 600 }}>Default</span>}
+                    </MenuItem>
+                  ))}
+                </StyledSelect>
+              ) : (
+                <NoVoiceStyles>
+                  There are no voice styles available. Try to refresh the page.
+                  {/* <Emoji emojiStyle={user.emojisStyle} unified="2639-fe0f" size={24} /> */}
+                </NoVoiceStyles>
+              )}
+            </FormControl>
+
+            <Box>
+              {/* <Typography sx={{ marginBottom: "2px", marginLeft: "18px", fontSize: "16px" }}>
+                Voice Volume
+              </Typography> */}
+
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <VolumeSlider
+                  spacing={2}
+                  direction="row"
+                  sx={
+                    {
+                      // "@media (max-width: 600px)": {
+                      //   width: "180px",
+                      //   padding: "8px 18px 8px 9px",
+                      // },
+                    }
+                  }
+                  alignItems="center"
+                >
+                  <Tooltip
+                    title={user.settings[0].voiceVolume ? "Mute" : "Unmute"}
+                    onClick={handleMuteClick}
+                  >
+                    <IconButton sx={{ color: "black" }}>
+                      {user.settings[0].voiceVolume === 0 ? (
+                        <VolumeOff />
+                      ) : user.settings[0].voiceVolume <= 0.4 ? (
+                        <VolumeDown />
+                      ) : (
+                        <VolumeUp />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                  <Slider
+                    sx={{
+                      width: "200px",
+                    }}
+                    value={user.settings[0].voiceVolume}
+                    onChange={handleVoiceVolChange}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    aria-label="Volume Slider"
+                    valueLabelFormat={() => {
+                      const vol = Math.floor(user.settings[0].voiceVolume * 100);
+                      return vol === 0 ? "Muted" : vol + "%";
+                    }}
+                    valueLabelDisplay="auto"
+                  />
+                </VolumeSlider>
+              </div>
+            </Box>
+          </FormGroup>
+        )}
+      </Container>
+
+      <DialogActions
+      // style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+      >
+        {/* <span
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            wordBreak: "break-all",
+            fontSize: "14px",
+            margin: "0 18px",
+            gap: "4px",
+            opacity: 0.8,
+          }}
+        >
+          Made with <Emoji unified="2764-fe0f" size={14} emojiStyle={user.emojisStyle} />{" "}
+          {user.emojisStyle === EmojiStyle.NATIVE && "\u00A0"} by{" "}
+          <StyledLink href="https://github.com/maciekt07" target="_blank">
+            maciekt07
+          </StyledLink>
+        </span> */}
+        <DialogBtn onClick={onClose}>Close</DialogBtn>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+const Container = styled.div`
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  flex-direction: column;
+  user-select: none;
+  margin: 0 18px;
+  gap: 6px;
+`;
+
+const StyledSelect = styled(Select)`
+  width: 300px;
+  border-radius: 18px;
+  color: black;
+  margin: 8px 0;
+`;
+
+const NoVoiceStyles = styled.p`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.8;
+  font-weight: 500;
+  max-width: 300px;
+`;
+
+const VolumeSlider = styled(Stack)`
+  margin: 8px 0;
+  background: #afafaf39;
+  padding: 12px 24px 12px 18px;
+  border-radius: 18px;
+  transition: 0.3s all;
+  &:hover {
+    background: #89898939;
+  }
+`;
+```
+src/components/TaskMenu.tsx
+```tsx
+import {
+  ContentCopy,
+  Delete,
+  Done,
+  Edit,
+  Launch,
+  PushPin,
+  RecordVoiceOver,
+} from "@mui/icons-material";
+import { User } from "../types/user";
+import { Divider, Menu, MenuItem } from "@mui/material";
+import { BottomSheet } from "react-spring-bottom-sheet";
+import { Emoji, EmojiStyle } from "emoji-picker-react";
+import styled from "@emotion/styled";
+import "react-spring-bottom-sheet/dist/style.css";
+import { useResponsiveDisplay } from "../hooks/useResponsiveDisplay";
+import { ColorPalette } from "../styles";
+import { useNavigate } from "react-router-dom";
+
+//TODO: Move all functions to TasksMenu component
+
+interface TaskMenuProps {
+  user: User;
+  selectedTaskId: number | null;
+  setEditModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  anchorEl: null | HTMLElement;
+  handleMarkAsDone: () => void;
+  handlePin: () => void;
+  handleDeleteTask: () => void;
+  handleDuplicateTask: () => void;
+  handleCloseMoreMenu: () => void;
+  handleReadAloud: () => void;
+}
+
+export const TaskMenu = ({
+  user,
+  selectedTaskId,
+  setEditModalOpen,
+  anchorEl,
+  handleMarkAsDone,
+  handlePin,
+  handleDeleteTask,
+  handleDuplicateTask,
+  handleCloseMoreMenu,
+  handleReadAloud,
+}: TaskMenuProps) => {
+  const n = useNavigate();
+  const redirectToTaskDetails = () => {
+    const selectedTask = user.tasks.find((task) => task.id === selectedTaskId);
+    const taskId = selectedTask?.id.toString().replace(".", "");
+    n(`/task/${taskId}`);
+  };
+  const menuItems: JSX.Element = (
+    <div>
+      <StyledMenuItem
+        onClick={() => {
+          handleCloseMoreMenu();
+          handleMarkAsDone();
+        }}
+      >
+        <Done /> &nbsp;{" "}
+        {user.tasks.find((task) => task.id === selectedTaskId)?.done
+          ? "Mark as not done"
+          : "Mark as done"}
+      </StyledMenuItem>
+      <StyledMenuItem
+        onClick={() => {
+          handleCloseMoreMenu();
+          handlePin();
+        }}
+      >
+        <PushPin /> &nbsp;{" "}
+        {user.tasks.find((task) => task.id === selectedTaskId)?.pinned ? "Unpin" : "Pin"}
+      </StyledMenuItem>
+      <StyledMenuItem onClick={redirectToTaskDetails}>
+        <Launch /> &nbsp; Task details
+      </StyledMenuItem>
+      {user.settings[0].enableReadAloud && (
+        <StyledMenuItem
+          onClick={handleReadAloud}
+          disabled={window.speechSynthesis.speaking || window.speechSynthesis.pending}
+        >
+          <RecordVoiceOver /> &nbsp; Read Aloud
+        </StyledMenuItem>
+      )}
+      <Divider />
+      <StyledMenuItem
+        onClick={() => {
+          handleCloseMoreMenu();
+          setEditModalOpen(true);
+        }}
+      >
+        <Edit /> &nbsp; Edit
+      </StyledMenuItem>
+      <StyledMenuItem onClick={handleDuplicateTask}>
+        <ContentCopy /> &nbsp; Duplicate
+      </StyledMenuItem>
+      <Divider />
+      <StyledMenuItem
+        clr={ColorPalette.red}
+        onClick={() => {
+          handleCloseMoreMenu();
+          handleDeleteTask();
+        }}
+      >
+        <Delete /> &nbsp; Delete
+      </StyledMenuItem>
+    </div>
+  );
+  const isMobile = useResponsiveDisplay();
+  return (
+    <>
+      {isMobile ? (
+        <BottomSheet
+          open={Boolean(anchorEl)}
+          onDismiss={handleCloseMoreMenu}
+          snapPoints={({ minHeight, maxHeight }) => [minHeight, maxHeight]}
+          expandOnContentDrag
+          header={
+            <SheetHeader>
+              <Emoji
+                emojiStyle={user.emojisStyle}
+                size={32}
+                unified={user.tasks.find((task) => task.id === selectedTaskId)?.emoji || ""}
+              />{" "}
+              {user.emojisStyle === EmojiStyle.NATIVE && "\u00A0 "}
+              {user.tasks.find((task) => task.id === selectedTaskId)?.name}
+            </SheetHeader>
+          }
+          // footer={
+          //   <div
+          //     style={{
+          //       display: "flex",
+          //       justifyContent: "center",
+          //       alignItems: "center",
+          //     }}
+          //   >
+          //     <Button
+          //       onClick={handleCloseMoreMenu}
+          //       variant="outlined"
+          //       sx={{
+          //         borderRadius: "100px",
+          //         width: "90%",
+          //         padding: "12px",
+          //         fontSize: "16px",
+          //       }}
+          //     >
+          //       Dimiss
+          //     </Button>
+          //   </div>
+          // }
+        >
+          <SheetContent>{menuItems}</SheetContent>
+        </BottomSheet>
+      ) : (
+        <Menu
+          id="task-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleCloseMoreMenu}
+          sx={{
+            "& .MuiPaper-root": {
+              borderRadius: "18px",
+              minWidth: "200px",
+              boxShadow: "none",
+              padding: "6px 4px",
+            },
+          }}
+          MenuListProps={{
+            "aria-labelledby": "more-button",
+          }}
+        >
+          {menuItems}
+        </Menu>
+      )}
+    </>
+  );
+};
+
+const SheetHeader = styled.h3`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  color: ${ColorPalette.fontDark};
+  margin: 10px;
+  font-size: 20px;
+`;
+
+const SheetContent = styled.div`
+  color: ${ColorPalette.fontDark};
+  margin: 20px 10px;
+  & .MuiMenuItem-root {
+    font-size: 16px;
+    padding: 16px;
+    &::before {
+      content: "";
+      display: inline-block;
+      margin-right: 10px;
+    }
+  }
+`;
+const StyledMenuItem = styled(MenuItem)<{ clr?: string }>`
+  margin: 0 6px;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: none;
+  color: ${({ clr }) => clr || ColorPalette.fontDark};
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+```
+src/components/Tasks.tsx
+```tsx
+import { Category, Task, UserProps } from "../types/user";
+import { ReactNode, useEffect, useState } from "react";
+import { calculateDateDifference, formatDate, getFontColorFromHex } from "../utils";
+import {
+  Alarm,
+  Cancel,
+  Close,
+  Done,
+  MoreVert,
+  Pause,
+  PlayArrow,
+  PushPin,
+  RecordVoiceOver,
+  Search,
+} from "@mui/icons-material";
+import {
+  Avatar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  InputAdornment,
+  Tooltip,
+} from "@mui/material";
+import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { EditTask } from ".";
+import {
+  CategoriesListContainer,
+  CategoryChip,
+  ColorPalette,
+  DialogBtn,
+  EmojiContainer,
+  HighlightedText,
+  NoTasks,
+  Pinned,
+  SearchInput,
+  TaskComponent,
+  TaskDate,
+  TaskDescription,
+  TaskHeader,
+  TaskInfo,
+  TaskName,
+  TasksContainer,
+  TimeLeft,
+} from "../styles";
+
+import { TaskMenu } from ".";
+import toast from "react-hot-toast";
+import { useResponsiveDisplay } from "../hooks/useResponsiveDisplay";
+import Marquee from "react-fast-marquee";
+
+/**
+ * Component to display a list of tasks.
+ */
+
+export const Tasks = ({ user, setUser }: UserProps): JSX.Element => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  const open = Boolean(anchorEl);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+
+  const isMobile = useResponsiveDisplay();
+
+  // Handler for clicking the more options button in a task
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, taskId: number) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedTaskId(taskId);
+  };
+
+  const handleCloseMoreMenu = () => {
+    setAnchorEl(null);
+    document.body.style.overflow = "visible";
+  };
+
+  const reorderTasks = (tasks: Task[]): Task[] => {
+    // Reorders tasks by moving pinned tasks to the top
+    let pinnedTasks = tasks.filter((task) => task.pinned);
+    let unpinnedTasks = tasks.filter((task) => !task.pinned);
+
+    // Filter tasks based on the selected category
+    if (selectedCatId !== undefined) {
+      unpinnedTasks = unpinnedTasks.filter((task) => {
+        if (task.category) {
+          return task.category.some((category) => category.id === selectedCatId);
+        }
+        return false;
+      });
+      pinnedTasks = pinnedTasks.filter((task) => {
+        if (task.category) {
+          return task.category.some((category) => category.id === selectedCatId);
+        }
+        return false;
+      });
+    }
+
+    // Filter tasks based on the search input
+    const searchLower = search.toLowerCase();
+    unpinnedTasks = unpinnedTasks.filter(
+      (task) =>
+        task.name.toLowerCase().includes(searchLower) ||
+        (task.description && task.description.toLowerCase().includes(searchLower))
+    );
+    pinnedTasks = pinnedTasks.filter(
+      (task) =>
+        task.name.toLowerCase().includes(searchLower) ||
+        (task.description && task.description.toLowerCase().includes(searchLower))
+    );
+
+    // move done tasks to bottom
+    if (user.settings[0]?.doneToBottom) {
+      const doneTasks = unpinnedTasks.filter((task) => task.done);
+      const notDoneTasks = unpinnedTasks.filter((task) => !task.done);
+      return [...pinnedTasks, ...notDoneTasks, ...doneTasks];
+    }
+
+    return [...pinnedTasks, ...unpinnedTasks];
+  };
+
+  const handleMarkAsDone = () => {
+    // Toggles the "done" property of the selected task
+    if (selectedTaskId) {
+      const updatedTasks = user.tasks.map((task) => {
+        if (task.id === selectedTaskId) {
+          return { ...task, done: !task.done };
+        }
+        return task;
+      });
+      setUser((prevUser) => ({
+        ...prevUser,
+        tasks: updatedTasks,
+      }));
+
+      const allTasksDone = updatedTasks.every((task) => task.done);
+
+      if (allTasksDone) {
+        toast.success(
+          () => (
+            <div>
+              <b>All tasks done</b>
+              <br />
+              <span>You've checked off all your todos. Well done!</span>
+            </div>
+          ),
+          {
+            icon: <Emoji unified="1f60e" emojiStyle={user.emojisStyle} />,
+          }
+        );
+      }
+    }
+  };
+
+  const handlePin = () => {
+    // Toggles the "pinned" property of the selected task
+    if (selectedTaskId) {
+      const updatedTasks = user.tasks.map((task) => {
+        if (task.id === selectedTaskId) {
+          return { ...task, pinned: !task.pinned };
+        }
+        return task;
+      });
+      setUser((prevUser) => ({
+        ...prevUser,
+        tasks: updatedTasks,
+      }));
+    }
+  };
+
+  const handleDeleteTask = () => {
+    // Opens the delete task dialog
+
+    if (selectedTaskId) {
+      setDeleteDialogOpen(true);
+    }
+  };
+  const confirmDeleteTask = () => {
+    // Deletes the selected task
+
+    if (selectedTaskId) {
+      const updatedTasks = user.tasks.filter((task) => task.id !== selectedTaskId);
+      setUser((prevUser) => ({
+        ...prevUser,
+        tasks: updatedTasks,
+      }));
+
+      setDeleteDialogOpen(false);
+      toast.success(() => (
+        <div>
+          Deleted Task - <b>{user.tasks.find((task) => task.id === selectedTaskId)?.name}</b>
+        </div>
+      ));
+    }
+  };
+  const cancelDeleteTask = () => {
+    // Cancels the delete task operation
+    setDeleteDialogOpen(false);
+  };
+
+  const handleEditTask = (
+    taskId: number,
+    newName: string,
+    newColor: string,
+    newEmoji?: string,
+    newDescription?: string,
+    newDeadline?: Date,
+    newCategory?: Category[]
+  ) => {
+    // Update the selected task with the new values
+    const updatedTasks = user.tasks.map((task) => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          name: newName,
+          color: newColor,
+          emoji: newEmoji,
+          description: newDescription,
+          deadline: newDeadline,
+          category: newCategory,
+          lastSave: new Date(),
+        };
+      }
+      return task;
+    });
+    // Update the user object with the updated tasks
+    setUser((prevUser) => ({
+      ...prevUser,
+      tasks: updatedTasks,
+    }));
+  };
+  const handleDuplicateTask = () => {
+    if (selectedTaskId) {
+      // Close the menu
+      setAnchorEl(null);
+      // Find the selected task
+      const selectedTask = user.tasks.find((task) => task.id === selectedTaskId);
+      if (selectedTask) {
+        // Create a duplicated task with a new ID and current date
+        const duplicatedTask: Task = {
+          ...selectedTask,
+          id: new Date().getTime() + Math.floor(Math.random() * 1000),
+          date: new Date(),
+          lastSave: undefined,
+        };
+        // Add the duplicated task to the existing tasks
+        const updatedTasks = [...user.tasks, duplicatedTask];
+        // Update the user object with the updated tasks
+        setUser((prevUser) => ({
+          ...prevUser,
+          tasks: updatedTasks,
+        }));
+      }
+    }
+  };
+
+  const handleReadAloud = () => {
+    const selectedTask = user.tasks.find((task) => task.id === selectedTaskId);
+    const voices = window.speechSynthesis.getVoices();
+    const voiceName = voices.find((voice) => voice.name === user.settings[0].voice);
+    const voiceVolume = user.settings[0].voiceVolume;
+    const taskName = selectedTask?.name || "";
+    const taskDescription = selectedTask?.description || "";
+    const taskDate = formatDate(new Date(selectedTask?.date || ""));
+    const taskDeadline = selectedTask?.deadline
+      ? ". Task Deadline: " + calculateDateDifference(new Date(selectedTask.deadline) || "")
+      : "";
+
+    const textToRead = `${taskName}. ${taskDescription}. Date: ${taskDate}${taskDeadline}`;
+
+    const utterThis: SpeechSynthesisUtterance = new SpeechSynthesisUtterance(textToRead);
+
+    if (voiceName) {
+      utterThis.voice = voiceName;
+    }
+
+    if (voiceVolume) {
+      utterThis.volume = voiceVolume;
+    }
+
+    setAnchorEl(null);
+    const pauseSpeech = () => {
+      window.speechSynthesis.pause();
+    };
+
+    const resumeSpeech = () => {
+      window.speechSynthesis.resume();
+    };
+
+    const cancelSpeech = () => {
+      window.speechSynthesis.cancel();
+      toast.dismiss(SpeechToastId);
+      setAnchorEl(null);
+    };
+
+    const SpeechToastId = toast(
+      () => {
+        const [isPlaying, setIsPlaying] = useState<boolean>(true);
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              touchAction: "none",
+            }}
+          >
+            {/* FIXME: */}
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                fontWeight: 600,
+              }}
+            >
+              <RecordVoiceOver /> &nbsp; Speaking: {selectedTask?.name}
+            </span>
+
+            <span style={{ marginTop: "10px", fontSize: "16px" }}>
+              Voice: {utterThis.voice?.name || "Default"}
+            </span>
+
+            <div>
+              {/* FIXME: */}
+              <Marquee
+                delay={0.6}
+                play={isPlaying}
+                // gradient
+                // gradientColor="#14143166"
+                // style={{
+                //   borderRadius: "8px",
+                // }}
+              >
+                <p style={{ margin: "6px 0" }}>{utterThis.text} &nbsp;</p>
+              </Marquee>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "16px",
+                gap: "8px",
+              }}
+            >
+              {isPlaying ? (
+                <IconButton
+                  sx={{ color: "white" }}
+                  onClick={() => {
+                    pauseSpeech();
+                    setIsPlaying(!isPlaying);
+                  }}
+                >
+                  <Pause fontSize="large" />
+                </IconButton>
+              ) : (
+                <IconButton
+                  sx={{ color: "white" }}
+                  onClick={() => {
+                    resumeSpeech();
+                    setIsPlaying(!isPlaying);
+                  }}
+                >
+                  <PlayArrow fontSize="large" />
+                </IconButton>
+              )}
+
+              <IconButton sx={{ color: "white" }} onClick={cancelSpeech}>
+                <Cancel fontSize="large" />
+              </IconButton>
+            </div>
+          </div>
+        );
+      },
+      {
+        duration: 999999999,
+        style: {
+          border: "1px solid #1b1d4eb7",
+          WebkitBackdropFilter: "blur(10px)",
+          backdropFilter: "blur(10px)",
+        },
+      }
+    );
+
+    // Set up event listener for the end of speech
+    utterThis.onend = () => {
+      // Close the menu
+      setAnchorEl(null);
+      // Hide the toast when speech ends
+      toast.dismiss(SpeechToastId);
+    };
+    console.log(utterThis);
+    if (voiceVolume > 0) {
+      window.speechSynthesis.speak(utterThis);
+    }
+  };
+
+  const [categories, setCategories] = useState<Category[] | undefined>(undefined);
+  const [selectedCatId, setSelectedCatId] = useState<number | undefined>(undefined);
+
+  const [categoryCounts, setCategoryCounts] = useState<{
+    [categoryId: number]: number;
+  }>({});
+
+  useEffect(() => {
+    const tasks: Task[] = user.tasks;
+    const uniqueCategories: Category[] = [];
+
+    tasks.forEach((task) => {
+      if (task.category) {
+        task.category.forEach((category) => {
+          if (!uniqueCategories.some((c) => c.id === category.id)) {
+            uniqueCategories.push(category);
+          }
+        });
+      }
+    });
+
+    // Calculate category counts
+    const counts: { [categoryId: number]: number } = {};
+    uniqueCategories.forEach((category) => {
+      const categoryTasks = tasks.filter((task) =>
+        task.category?.some((cat) => cat.id === category.id)
+      );
+      counts[category.id] = categoryTasks.length;
+    });
+
+    // Sort categories based on count
+    uniqueCategories.sort((a, b) => {
+      const countA = counts[a.id] || 0;
+      const countB = counts[b.id] || 0;
+      return countB - countA;
+    });
+
+    setCategories(uniqueCategories);
+    setCategoryCounts(counts);
+  }, [user.tasks]);
+
+  const [search, setSearch] = useState<string>("");
+  const highlightMatchingText = (text: string, search: string): ReactNode => {
+    if (!search) {
+      return text;
+    }
+
+    const parts = text.split(new RegExp(`(${search})`, "gi"));
+    return parts.map((part, index) =>
+      part.toLowerCase() === search.toLowerCase() ? (
+        <HighlightedText key={index}>{part}</HighlightedText>
+      ) : (
+        part
+      )
+    );
+  };
+
+  return (
+    <>
+      <TaskMenu
+        user={user}
+        selectedTaskId={selectedTaskId}
+        setEditModalOpen={setEditModalOpen}
+        anchorEl={anchorEl}
+        handleMarkAsDone={handleMarkAsDone}
+        handlePin={handlePin}
+        handleDeleteTask={handleDeleteTask}
+        handleDuplicateTask={handleDuplicateTask}
+        handleCloseMoreMenu={handleCloseMoreMenu}
+        handleReadAloud={handleReadAloud}
+      />
+      <TasksContainer>
+        {user.tasks.length > 0 && (
+          <SearchInput
+            focused
+            color="primary"
+            placeholder="Search for task..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search sx={{ color: "white" }} />
+                </InputAdornment>
+              ),
+              endAdornment: search ? (
+                <InputAdornment position="end">
+                  <IconButton
+                    sx={{
+                      transition: ".3s all",
+                      color:
+                        reorderTasks(user.tasks).length === 0 && user.tasks.length > 0
+                          ? ColorPalette.red
+                          : "white",
+                    }}
+                    onClick={() => setSearch("")}
+                  >
+                    <Close />
+                  </IconButton>
+                </InputAdornment>
+              ) : undefined,
+            }}
+          />
+        )}
+        {categories !== undefined &&
+          categories?.length > 1 &&
+          user.settings[0].enableCategories && (
+            <CategoriesListContainer
+            // ref={scrollContainerRef}
+            // onMouseDown={handleMouseDown}
+            // onMouseMove={handleMouseMove}
+            // onMouseUp={handleMouseUp}
+            >
+              {categories?.map((cat) => (
+                <CategoryChip
+                  label={
+                    <div>
+                      <span style={{ fontWeight: "bold" }}>{cat.name}</span>
+                      <span
+                        style={{
+                          fontSize: "14px",
+                          opacity: 0.9,
+                          marginLeft: "4px",
+                        }}
+                      >
+                        ({categoryCounts[cat.id] || 0})
+                      </span>
+                    </div>
+                  }
+                  glow={user.settings[0].enableGlow}
+                  backgroundclr={cat.color}
+                  onClick={() =>
+                    selectedCatId !== cat.id
+                      ? setSelectedCatId(cat.id)
+                      : setSelectedCatId(undefined)
+                  }
+                  key={cat.id}
+                  list
+                  onDelete={
+                    selectedCatId === cat.id ? () => setSelectedCatId(undefined) : undefined
+                  }
+                  style={{
+                    boxShadow: "none",
+                    display:
+                      selectedCatId === undefined || selectedCatId === cat.id
+                        ? "inline-flex"
+                        : "none",
+                    padding: "20px 14px",
+                    fontSize: "16px",
+                  }}
+                  avatar={
+                    cat.emoji ? (
+                      <Avatar
+                        alt={cat.name}
+                        sx={{
+                          background: "transparent",
+                          borderRadius: "0px",
+                        }}
+                      >
+                        {cat.emoji &&
+                          (user.emojisStyle === EmojiStyle.NATIVE ? (
+                            <div>
+                              <Emoji size={20} unified={cat.emoji} emojiStyle={EmojiStyle.NATIVE} />
+                            </div>
+                          ) : (
+                            <Emoji size={24} unified={cat.emoji} emojiStyle={user.emojisStyle} />
+                          ))}
+                      </Avatar>
+                    ) : (
+                      <></>
+                    )
+                  }
+                />
+              ))}
+            </CategoriesListContainer>
+          )}
+
+        {user.tasks.length !== 0 ? (
+          reorderTasks(user.tasks).map((task) => (
+            <TaskComponent
+              key={task.id}
+              backgroundColor={task.color}
+              clr={getFontColorFromHex(task.color)}
+              glow={user.settings[0].enableGlow}
+              done={task.done}
+              blur={selectedTaskId !== task.id && open && !isMobile}
+            >
+              {task.emoji || task.done ? (
+                <EmojiContainer clr={getFontColorFromHex(task.color)}>
+                  {task.done ? (
+                    <Done fontSize="large" />
+                  ) : user.emojisStyle === EmojiStyle.NATIVE ? (
+                    <div>
+                      <Emoji size={36} unified={task.emoji || ""} emojiStyle={EmojiStyle.NATIVE} />
+                    </div>
+                  ) : (
+                    <Emoji size={48} unified={task.emoji || ""} emojiStyle={user.emojisStyle} />
+                  )}
+                </EmojiContainer>
+              ) : null}
+              <TaskInfo>
+                {task.pinned && (
+                  <Pinned>
+                    <PushPin fontSize="small" /> &nbsp; Pinned
+                  </Pinned>
+                )}
+                <TaskHeader>
+                  <TaskName done={task.done}>{highlightMatchingText(task.name, search)}</TaskName>
+
+                  <Tooltip
+                    title={`Created at: ${new Date(task.date).toLocaleDateString()} • ${new Date(
+                      task.date
+                    ).toLocaleTimeString()}`}
+                  >
+                    <TaskDate>{formatDate(new Date(task.date))}</TaskDate>
+                  </Tooltip>
+                </TaskHeader>
+                <TaskDescription done={task.done}>
+                  {highlightMatchingText(task.description || "", search)}
+                </TaskDescription>
+
+                {task.deadline && (
+                  <TimeLeft done={task.done}>
+                    <Alarm
+                      fontSize="small"
+                      sx={{
+                        color:
+                          new Date() > new Date(task.deadline) && !task.done
+                            ? ColorPalette.red
+                            : getFontColorFromHex(task.color),
+                        filter:
+                          new Date() > new Date(task.deadline) && !task.done
+                            ? `drop-shadow(0 0 6px ${ColorPalette.red})`
+                            : "none",
+                      }}
+                    />{" "}
+                    &nbsp;
+                    {new Date(task.deadline).toLocaleDateString()} {" • "}
+                    {new Date(task.deadline).toLocaleTimeString()}
+                    {!task.done && (
+                      <>
+                        {" • "}
+                        {calculateDateDifference(new Date(task.deadline))}
+                      </>
+                    )}
+                  </TimeLeft>
+                )}
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "4px 6px",
+                    justifyContent: "left",
+                    alignItems: "center",
+                  }}
+                >
+                  {task.category &&
+                    user.settings[0].enableCategories !== undefined &&
+                    user.settings[0].enableCategories &&
+                    task.category.map((category) => (
+                      <div key={category.id}>
+                        <CategoryChip
+                          backgroundclr={category.color}
+                          borderclr={getFontColorFromHex(task.color)}
+                          glow={user.settings[0].enableGlow}
+                          label={category.name}
+                          size="medium"
+                          avatar={
+                            category.emoji ? (
+                              <Avatar
+                                alt={category.name}
+                                sx={{
+                                  background: "transparent",
+                                  borderRadius: "0px",
+                                }}
+                              >
+                                {category.emoji &&
+                                  (user.emojisStyle === EmojiStyle.NATIVE ? (
+                                    <div>
+                                      <Emoji
+                                        size={18}
+                                        unified={category.emoji}
+                                        emojiStyle={EmojiStyle.NATIVE}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <Emoji
+                                      size={20}
+                                      unified={category.emoji}
+                                      emojiStyle={user.emojisStyle}
+                                    />
+                                  ))}
+                              </Avatar>
+                            ) : (
+                              <></>
+                            )
+                          }
+                        />
+                      </div>
+                    ))}
+                </div>
+              </TaskInfo>
+              <IconButton
+                aria-label="Task Menu"
+                aria-controls={open ? "task-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={(event) => handleClick(event, task.id)}
+                sx={{
+                  color: getFontColorFromHex(task.color),
+                  margin: "4px",
+                }}
+              >
+                <MoreVert />
+              </IconButton>
+            </TaskComponent>
+          ))
+        ) : (
+          <NoTasks>
+            <b>You don't have any tasks yet</b>
+            <br />
+            Click on the <b>+</b> button to add one
+          </NoTasks>
+        )}
+        {search && reorderTasks(user.tasks).length === 0 && user.tasks.length > 0 && (
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: "18px",
+              opacity: 0.9,
+              marginTop: "18px",
+            }}
+          >
+            <b>No tasks found</b>
+            <br />
+            Try searching with different keywords.
+          </div>
+        )}
+
+        <EditTask
+          open={editModalOpen}
+          task={user.tasks.find((task) => task.id === selectedTaskId)}
+          onClose={() => setEditModalOpen(false)}
+          user={user}
+          onSave={(editedTask) => {
+            handleEditTask(
+              editedTask.id,
+              editedTask.name,
+              editedTask.color,
+              editedTask.emoji || undefined,
+              editedTask.description || undefined,
+              editedTask.deadline || undefined,
+              editedTask.category || undefined
+            );
+            setEditModalOpen(false);
+          }}
+        />
+      </TasksContainer>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={cancelDeleteTask}
+        PaperProps={{
+          style: {
+            borderRadius: "28px",
+            padding: "10px",
+          },
+        }}
+      >
+        <DialogTitle>Are you sure you want to delete the task?</DialogTitle>
+        <DialogContent>
+          {user.tasks.find((task) => task.id === selectedTaskId)?.emoji !== undefined && (
+            <p
+              style={{
+                display: "flex",
+                justifyContent: "left",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <b>Emoji:</b>{" "}
+              <Emoji
+                size={28}
+                emojiStyle={user.emojisStyle}
+                unified={user.tasks.find((task) => task.id === selectedTaskId)?.emoji || ""}
+              />
+            </p>
+          )}
+          <p>
+            <b>Task Name:</b> {user.tasks.find((task) => task.id === selectedTaskId)?.name}
+          </p>
+          {user.tasks.find((task) => task.id === selectedTaskId)?.description !== undefined && (
+            <p>
+              <b>Task Description:</b>{" "}
+              {user.tasks.find((task) => task.id === selectedTaskId)?.description}
+            </p>
+          )}
+
+          {selectedTaskId !== null &&
+            user.tasks.find((task) => task.id === selectedTaskId)?.category?.[0]?.name !==
+              undefined && (
+              <p>
+                <b>Category:</b>{" "}
+                {user.tasks
+                  .find((task) => task.id === selectedTaskId)
+                  ?.category?.map((cat) => cat.name)
+                  .join(", ")}
+              </p>
+            )}
+        </DialogContent>
+        <DialogActions>
+          <DialogBtn onClick={cancelDeleteTask} color="primary">
+            Cancel
+          </DialogBtn>
+          <DialogBtn onClick={confirmDeleteTask} color="error">
+            Delete
+          </DialogBtn>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+```
+src/components/TopBar.tsx
+```tsx
+import styled from "@emotion/styled";
+import { ArrowBackIosNew } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { ColorPalette } from "../styles";
+
+interface TopBarProps {
+  title: string;
+}
+
+export const TopBar = ({ title }: TopBarProps) => {
+  const n = useNavigate();
+  const handleBackClick = () => n("/");
+  return (
+    <Container>
+      <BackBtn onClick={handleBackClick}>
+        <ArrowBackIosNew /> &nbsp; Back
+      </BackBtn>
+      <Title>{title}</Title>
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  margin: 0;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  backdrop-filter: blur(12px);
+  margin-bottom: 48px;
+`;
+
+const Title = styled.h2`
+  font-size: 28px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 4px 0 8px 0;
+  text-shadow: 0 0 24px #00000068;
+`;
+const BackBtn = styled.button`
+  position: absolute;
+
+  /* top: 24px;
+  left: 16px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  padding: 8px 12px;
+  background-color: transparent;
+  color: ${ColorPalette.fontLight};
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s all;
+
+  text-shadow: 0 0 24px #00000068;
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+```
+src/components/index.ts
+```ts
+export { AddTaskBtn } from "./AddTaskBtn";
+export { Tasks } from "./Tasks";
+export { ProfileAvatar } from "./ProfileAvatar";
+export { EditTask } from "./EditTask";
+export { TopBar } from "./TopBar";
+export { CustomEmojiPicker } from "./CustomEmojiPicker";
+export { SettingsDialog } from "./Settings";
+export { ErrorBoundary } from "./ErrorBoundary";
+export { TaskMenu } from "./TaskMenu";
+export { BottomNav } from "./BottomNav";
+export { CategorySelect } from "./CategorySelect";
+
+export { ColorPicker } from "./ColorPicker";
+```
